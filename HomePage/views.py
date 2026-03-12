@@ -4,7 +4,12 @@ from django.shortcuts import render
 
 from django.http import HttpResponse
 
-def Home(Request):
-    return HttpResponse('<h1>Home Page</h1>')
+#Learning phase
 
+# def Home(Request):
+#     return HttpResponse('<h1>Home Page</h1>')
 
+#Advanced trick to render html
+
+def Home(request):
+    return render(request,'HomePage/homepage.html')
