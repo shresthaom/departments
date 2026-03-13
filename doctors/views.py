@@ -4,5 +4,8 @@ from django.shortcuts import render
 
 from django.http import HttpResponse;
 
+# def DoctorPage(Request):
+#     return HttpResponse("<h1> Doctors Page </h1>")
+
 def DoctorPage(Request):
-    return HttpResponse("<h1> Doctors Page </h1>")
+    return render(Request,'doctors/doctors.html')
