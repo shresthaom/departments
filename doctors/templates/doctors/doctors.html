@@ -1,0 +1,34 @@
+{% comment %} <!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+    </head>
+    <body>
+        {% comment %} <h1>This is the doctors page</h1>
+        <h2>Doctors body</h2>
+        {% endcomment %}
+       {% comment %} hello
+         {% for docinfo in docinfos %}
+            <h1>{{ docinfo.name }}</h1>
+            <h2>Qualification:{{docinfo.qualification}}</h2>
+            <h2>Years of Experience:{{docinfo.yoe}}</h2>
+         {% endfor %} {% endcomment %}
+{% comment %} 
+        <script src="" async defer></script>
+    </body>
+</html> {% endcomment %} 
+
+{% extends "HomePage/base.html" %}
+
+{% block content %}
+
+{%endblock content%}
