@@ -35,6 +35,8 @@ INSTALLED_APPS = [
     'doctors.apps.DoctorsConfig',
     'hospitals.apps.HospitalsConfig',
     'HomePage.apps.HomepageConfig',
+    'appointment',
+    'patients',
     
     
     'django.contrib.admin',
