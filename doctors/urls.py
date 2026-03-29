@@ -5,6 +5,7 @@ from . import views;
 
 urlpatterns = [
    
-    path('',views.DoctorPage,name='doctors'),
+    # path('',views.DoctorPage,name='doctors'),
+    path('',views.doctor_list,name='doctor_list')
 ]
 

@@ -1,17 +1,5 @@
 <h2>Doctors</h2>
-<div style="margin-bottom: 20px;">
 
-    <a href="{% url 'doctor_list' %}"
-       style="padding:8px 12px; background:#333; color:#fff; text-decoration:none; border-radius:6px;">
-        All Doctors
-    </a>
-
-    <a href="{% url 'doctor_list' %}?available=true"
-       style="padding:8px 12px; background:#28a745; color:#fff; text-decoration:none; border-radius:6px; margin-left:10px;">
-        Available Doctors
-    </a>
-
-</div>
 <div style="display:flex; flex-wrap:wrap; gap:15px;">
     {% for doctor in doctors %}
         <div style="
