@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render,get_object_or_404
 
 from . models import Doctor
 
@@ -32,14 +32,21 @@ docinfos=[
 #     return render(request,'doctors/doctors.html')
 
 
+from django.shortcuts import render
+from .models import Doctor
+
+
 def doctor_list(request):
-    available=request.GET.get('available')
+    available = request.GET.get('available')
 
-    if available=='true':
-        doctors=Doctor.objects.filter(a_status=True)
-
+    if available == 'true':
+        doctors = Doctor.objects.filter(a_status=True)
     else:
-        doctors=Doctor.objects.all()
+        doctors = Doctor.objects.all()
 
-    return render(request,'doctors/doctors.html',{'doctors':doctors})
+    return render(request, 'doctors/doctors.html', {'doctors': doctors})
 
+
+def doctor_detail(request, doctor_id):
+    doctor = get_object_or_404(Doctor, doctor_id=doctor_id)
+    return render(request, 'doctors/doctor_detail.html', {'doctor': doctor})

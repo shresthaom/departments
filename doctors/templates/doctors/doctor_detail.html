@@ -1,0 +1,13 @@
+<h2>{{ doctor.name }}</h2>
+
+<p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+<p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+<p><strong>Fees:</strong> Rs. {{ doctor.fees }}</p>
+<p><strong>Phone:</strong> {{ doctor.phone }}</p>
+
+{% if doctor.a_status %}
+    <p style="color:green;">Available</p>
+    <a href="#">Book Appointment</a>
+{% else %}
+    <p style="color:red;">Not Available</p>
+{% endif %}

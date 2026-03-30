@@ -1,37 +1,45 @@
 <h2>Doctors</h2>
-<div style="margin-bottom: 20px;">
+
+<div style="margin-bottom: 15px;">
 
     <a href="{% url 'doctor_list' %}"
-       style="padding:8px 12px; background:#333; color:#fff; text-decoration:none; border-radius:6px;">
+       style="padding:6px 10px; background:black; color:white; text-decoration:none;">
         All Doctors
     </a>
 
     <a href="{% url 'doctor_list' %}?available=true"
-       style="padding:8px 12px; background:#28a745; color:#fff; text-decoration:none; border-radius:6px; margin-left:10px;">
+       style="padding:6px 10px; background:green; color:white; text-decoration:none; margin-left:5px;">
         Available Doctors
     </a>
 
 </div>
-<div style="display:flex; flex-wrap:wrap; gap:15px;">
-    {% for doctor in doctors %}
-        <div style="
-            border:1px solid #ddd;
-            padding:15px;
-            width:250px;
-            border-radius:10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        ">
-            <h3 style="margin:0;">{{ doctor.name }}</h3>
-            <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
-            <p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
 
-            {% if doctor.a_status %}
-                <span style="color:green; font-weight:bold;">Available</span>
-            {% else %}
-                <span style="color:red; font-weight:bold;">Not Available</span>
-            {% endif %}
-        </div>
+<div style="display:flex; flex-wrap:wrap; gap:10px;">
+
+    {% for doctor in doctors %}
+
+        <a href="{% url 'doctor_detail' doctor.doctor_id %}" style="text-decoration:none; color:black;">
+
+            <div style="border:1px solid #ccc; padding:10px; width:200px;">
+
+                <h3>{{ doctor.name }}</h3>
+
+                <p>{{ doctor.specialization }}</p>
+
+                <p>{{ doctor.qualification }}</p>
+
+                {% if doctor.a_status %}
+                    <p style="color:green;">Available</p>
+                {% else %}
+                    <p style="color:red;">Not Available</p>
+                {% endif %}
+
+            </div>
+
+        </a>
+
     {% empty %}
         <p>No doctors found.</p>
     {% endfor %}
+
 </div>
