@@ -7,7 +7,7 @@
 
 {% if doctor.a_status %}
     <p style="color:green;">Available</p>
-    <a href="#">Book Appointment</a>
+    <a href="/appointment/book/{{ doctor.doctor_id }}/">Book Appointment</a>
 {% else %}
     <p style="color:red;">Not Available</p>
 {% endif %}
