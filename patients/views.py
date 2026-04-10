@@ -48,8 +48,17 @@ def user_logout(request):
 def patient_dashboard(request):
     if not request.user.is_authenticated:
         return redirect('login')
-    
-    return render(request,'patients/patient_dashboard.html')
+
+    try:
+        patient = Patients.objects.get(user=request.user)
+    except Patients.DoesNotExist:
+        return redirect('register_patient_details')
+
+    context = {
+        'patient': patient
+    }
+
+    return render(request,'patients/patient_dashboard.html', context)
 
 
 
@@ -69,6 +78,7 @@ def register_patients(request):
 
         Patients.objects.create(
 
+            user=request.user,
             name=name,
             address=address,
             phone=phone,
@@ -79,4 +89,5 @@ def register_patients(request):
         return redirect('success')
     
     return render(request,'patients/patients_form.html')
+
 

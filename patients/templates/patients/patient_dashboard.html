@@ -1,11 +1,87 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Patient Dashboard</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background-color: #f4f6f8;
+        }
+
+        .container {
+            width: 600px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            margin: 10px 0;
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            text-align: center;
+            background-color: #2d89ef;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+
+        .btn:hover {
+            background-color: #1b5fbf;
+        }
+    </style>
 </head>
+
 <body>
-    <h1>Patient Dashboard</h1>
+
+<div class="container">
+    <h2>Patient Dashboard</h2>
+
+    <div class="info">
+        <span class="label">Name:</span> {{ patient.name }}
+    </div>
+
+    <div class="info">
+        <span class="label">Email:</span> {{ patient.email }}
+    </div>
+
+    <div class="info">
+        <span class="label">Phone:</span> {{ patient.phone }}
+    </div>
+
+    <div class="info">
+        <span class="label">Address:</span> {{ patient.address }}
+    </div>
+
+    <div class="info">
+        <span class="label">Date of Birth:</span> {{ patient.dob }}
+    </div>
+
+    <div class="info">
+        <span class="label">Gender:</span> {{ patient.get_gender_display }}
+    </div>
+
+    <a href="{% url 'logout' %}" class="btn">Logout</a>
+</div>
+
 </body>
 </html>
