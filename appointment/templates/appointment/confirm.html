@@ -1,0 +1,19 @@
+{% if messages %}
+<script>
+    {% for message in messages %}
+        alert("{{ message }}");
+        window.location.href = "/";
+    {% endfor %}
+</script>
+{% endif %}
+
+<h2>Confirm Appointment</h2>
+
+<p>Doctor: {{ doctor.name }}</p>
+<p>Date: {{ data.appointment_date }}</p>
+<p>Time: {{ data.appointment_time }}</p>
+
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit">Confirm Booking</button>
+</form>

@@ -1,0 +1,17 @@
+<h2>Department: {{ department.name }}</h2>
+
+<h3>Doctors</h3>
+
+{% for doctor in doctors %}
+    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <p><strong>{{ doctor.name }}</strong></p>
+        <p>{{ doctor.specialization }}</p>
+        <p>Fees: {{ doctor.fees }}</p>
+
+        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
+            View Profile
+        </a>
+    </div>
+{% empty %}
+    <p>No available doctors</p>
+{% endfor %}

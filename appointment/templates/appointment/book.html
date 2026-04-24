@@ -1,0 +1,74 @@
+<h2>Book Appointment</h2>
+
+<h3>Doctor: {{ doctor.name }}</h3>
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Date:</label>
+    <input type="date" id="appointment_date" name="appointment_date" required>
+
+    <label>Time:</label>
+    <select name="appointment_time" id="time_slot" required>
+        <option value="">Select Time Slot</option>
+    </select>
+
+    <label>Reason for visit:</label>
+    <textarea name="reason" required></textarea>
+
+    <button type="submit">Continue</button>
+</form>
+
+<script>
+    const dateInput = document.getElementById("appointment_date");
+    const timeSelect = document.getElementById("time_slot");
+
+    // No past dates and no saturdays
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 14);
+
+    function formatDate(d) {
+        return d.toISOString().split("T")[0];
+    }
+
+    dateInput.min = formatDate(today);
+    dateInput.max = formatDate(maxDate);
+
+    dateInput.addEventListener("change", function () {
+        const selectedDate = new Date(this.value);
+        const day = selectedDate.getDay(); // 6 = Saturday
+
+        if (day === 6) {
+            alert("Hospitals are closed on Saturdays. Please choose another day.");
+            this.value = "";
+        }
+    });
+
+    // Time slot with gap 10 mins
+    function generateTimeSlots() {
+        timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+
+        let start = 9 * 60;   // 9:00 AM in minutes
+        let end = 17 * 60;    // 5:00 PM in minutes
+        let step = 10;        // 10 minutes gap
+
+        for (let minutes = start; minutes <= end; minutes += step) {
+            let hours = Math.floor(minutes / 60);
+            let mins = minutes % 60;
+
+            let formattedHour = hours.toString().padStart(2, '0');
+            let formattedMin = mins.toString().padStart(2, '0');
+
+            let time = `${formattedHour}:${formattedMin}`;
+
+            let option = document.createElement("option");
+            option.value = time;
+            option.textContent = time;
+
+            timeSelect.appendChild(option);
+        }
+    }
+
+    generateTimeSlots();
+</script>

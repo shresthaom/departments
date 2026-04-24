@@ -1,0 +1,23 @@
+<a href="{% url 'home' %}">← Back to Home</a>
+<h2>Hospitals</h2>
+
+<form method="GET">
+    <input type="text" name="q" placeholder="Search hospitals..." value="{{ query }}">
+    <button type="submit">Search</button>
+</form>
+
+<br>
+
+{% for hospital in hospitals %}
+    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+        <a href="{% url 'hospital_detail' hospital.hospital_id %}">
+            <h3>{{ hospital.name }}</h3>
+        </a>
+
+        <p>{{ hospital.address }}</p>
+
+        <a href="{% url 'hospital_detail' hospital.hospital_id %}">
+            View Doctors →
+        </a>
+    </div>
+{% endfor %}

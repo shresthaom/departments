@@ -1,15 +1,24 @@
 from django.shortcuts import render
+from doctors.models import Doctor
+from hospitals.models import Hospital
+from appointment.models import Appointment
+from datetime import date
 
-# Create your views here.
-
-from django.http import HttpResponse
-
-#Learning phase
-
-# def Home(Request):
-#     return HttpResponse('<h1>Home Page</h1>')
-
-#Advanced trick to render html
 
 def Home(request):
-    return render(request,'HomePage/homepage.html')
+    doctors = Doctor.objects.all()
+    hospitals = Hospital.objects.all()
+
+    appointment_count = 0
+
+    if request.user.is_authenticated:
+        appointment_count = Appointment.objects.filter(
+            patient=request.user,
+            appointment_date__gte=date.today()
+        ).count()
+
+    return render(request, "HomePage/homepage.html", {
+        'doctors': doctors,
+        'hospitals': hospitals,
+        'appointment_count': appointment_count
+    })

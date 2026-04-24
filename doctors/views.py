@@ -36,17 +36,20 @@ from django.shortcuts import render
 from .models import Doctor
 
 
+
 def doctor_list(request):
     available = request.GET.get('available')
 
+    doctors = Doctor.objects.all()
+
     if available == 'true':
-        doctors = Doctor.objects.filter(a_status=True)
-    else:
-        doctors = Doctor.objects.all()
+        doctors = doctors.filter(a_status=True)
 
     return render(request, 'doctors/doctors.html', {'doctors': doctors})
 
 
 def doctor_detail(request, doctor_id):
     doctor = get_object_or_404(Doctor, doctor_id=doctor_id)
-    return render(request, 'doctors/doctor_detail.html', {'doctor': doctor})
+    return render(request, "doctors/doctor_detail.html", {
+        "doctor": doctor
+    })

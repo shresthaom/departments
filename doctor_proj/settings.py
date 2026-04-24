@@ -27,11 +27,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+from django.contrib.messages import constants as messages
+
+MESSAGE_TAGS = {
+    messages.SUCCESS: 'success',
+    messages.ERROR: 'error',
+}
+
 
 # Application definition
 
 INSTALLED_APPS = [
-    'AboutUs.apps.AboutusConfig',
+   
     'doctors.apps.DoctorsConfig',
     'hospitals.apps.HospitalsConfig',
     'HomePage.apps.HomepageConfig',
@@ -56,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
 ]
 
 ROOT_URLCONF = 'doctor_proj.urls'
@@ -130,3 +138,4 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+LOGIN_URL = '/login/'

@@ -1,87 +1,49 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Patient Dashboard</title>
+<a href="{% url 'home' %}">Home</a> |
+<a href="{% url 'hospital_list' %}">Hospitals</a> |
+<a href="{% url 'doctor_list' %}">Doctors</a>
 
-    <style>
-        body {
-            font-family: Arial;
-            background-color: #f4f6f8;
-        }
+{% if messages %}
+    {% for message in messages %}
+        <script>
+            alert("{{ message }}");
+        </script>
+    {% endfor %}
+{% endif %}
 
-        .container {
-            width: 600px;
-            margin: 40px auto;
-            background-color: white;
-            padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
+<h2>Welcome, {{ patient.name }}</h2>
 
-        h2 {
-            text-align: center;
-            margin-bottom: 20px;
-        }
+<h3>Upcoming Appointments ({{ upcoming_count }})</h3>
 
-        .info {
-            margin: 10px 0;
-            padding: 10px;
-            border-bottom: 1px solid #ddd;
-        }
+{% if upcoming %}
+    {% for appt in upcoming %}
+        <a href="{% url 'appointment_detail' appt.appointment_id %}" style="text-decoration:none; color:black;">
+            <div style="border:1px solid #ccc; padding:15px; margin-bottom:10px; border-radius:8px; cursor:pointer;">
+                <p><strong>Doctor:</strong> {{ appt.doctor.name }}</p>
+                <p><strong>Date:</strong> {{ appt.appointment_date }}</p>
+                <p><strong>Time:</strong> {{ appt.appointment_time }}</p>
+            </div>
+        </a>
+    {% endfor %}
+{% else %}
+    <p>No upcoming appointments</p>
+{% endif %}
 
-        .label {
-            font-weight: bold;
-        }
 
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin-top: 20px;
-            text-align: center;
-            background-color: #2d89ef;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-        }
+<h3>Past Appointments</h3>
 
-        .btn:hover {
-            background-color: #1b5fbf;
-        }
-    </style>
-</head>
+{% if past %}
+    {% for appt in past %}
+        <div style="border:1px solid #ccc; padding:15px; margin-bottom:10px; border-radius:8px;">
+            <p><strong>Doctor:</strong> {{ appt.doctor.name }}</p>
+            <p><strong>Date:</strong> {{ appt.appointment_date }}</p>
+            <p><strong>Time:</strong> {{ appt.appointment_time }}</p>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No past appointments</p>
+{% endif %}
 
-<body>
+<br>
 
-<div class="container">
-    <h2>Patient Dashboard</h2>
-
-    <div class="info">
-        <span class="label">Name:</span> {{ patient.name }}
-    </div>
-
-    <div class="info">
-        <span class="label">Email:</span> {{ patient.email }}
-    </div>
-
-    <div class="info">
-        <span class="label">Phone:</span> {{ patient.phone }}
-    </div>
-
-    <div class="info">
-        <span class="label">Address:</span> {{ patient.address }}
-    </div>
-
-    <div class="info">
-        <span class="label">Date of Birth:</span> {{ patient.dob }}
-    </div>
-
-    <div class="info">
-        <span class="label">Gender:</span> {{ patient.get_gender_display }}
-    </div>
-
-    <a href="{% url 'logout' %}" class="btn">Logout</a>
-</div>
-
-</body>
-</html>
+<a href="{% url 'doctor_list' %}">Book Appointment</a><br><br>
+<a href="{% url 'logout' %}">Logout</a>

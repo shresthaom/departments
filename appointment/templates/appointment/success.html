@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+    <script>
+        // Show popup immediately
+        window.onload = function () {
+            alert("Appointment booked successfully!");
+
+            // Show redirect message after alert
+            document.getElementById("msg").innerText = "Redirecting to homepage...";
+
+            // Redirect after 2 seconds
+            setTimeout(function () {
+                window.location.href = "/homepage/";
+            }, 2000);
+        };
+    </script>
+</head>
+<body>
+
+<h2 id="msg">Processing...</h2>
+
+</body>
+</html>

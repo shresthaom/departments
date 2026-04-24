@@ -1,8 +1,15 @@
 from django.contrib import admin
+from .models import Hospital, Department
 
-# Register your models here.
+@admin.register(Hospital)
+class HospitalAdmin(admin.ModelAdmin):
+    list_display = ('name', 'address', 'phone', 'email')
 
 
-from .models import Hospital
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'hospital')
+    list_filter = ('hospital',)
 
-admin.site.register(Hospital)
+    def get_queryset(self, request):
+        return super().get_queryset(request).select_related('hospital')

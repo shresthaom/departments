@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upcoming Appointments</title>
+</head>
+
+<body>
+
+<h2>Your Upcoming Appointments</h2>
+
+{% if appointments %}
+
+    {% for appt in appointments %}
+        <div style="border:1px solid #ccc; padding:12px; margin-bottom:12px; border-radius:8px;">
+
+            <!-- Clickable area (go to detail page) -->
+            <a href="{% url 'appointment_detail' appt.pk %}" style="text-decoration:none; color:black;">
+
+                <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
+                <p><b>Date:</b> {{ appt.appointment_date }}</p>
+                <p><b>Time:</b> {{ appt.appointment_time }}</p>
+                <p><b>Status:</b> {{ appt.status }}</p>
+
+            </a>
+
+            <!-- Cancel Button -->
+            {% if appt.status != "cancelled" %}
+                <form method="POST" action="{% url 'cancel_appointment' appt.pk %}" style="margin-top:10px;">
+                    {% csrf_token %}
+                    <button type="submit" style="background:red; color:white; padding:6px 10px; border:none; cursor:pointer;">
+                        Cancel Appointment
+                    </button>
+                </form>
+            {% else %}
+                <p style="color:red; margin-top:10px;">Cancelled</p>
+            {% endif %}
+
+        </div>
+    {% endfor %}
+
+{% else %}
+    <p>No upcoming appointments.</p>
+{% endif %}
+
+</body>
+</html>

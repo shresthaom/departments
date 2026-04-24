@@ -1,13 +1,28 @@
+<a href="{% url 'doctor_detail' doctor.doctor_id %}">← Back to Doctor</a>
 <h2>Book Appointment with {{ doctor.name }}</h2>
 
+<form method="GET">
+    <label>Select Date:</label><br>
+    <input type="date" name="date" min="{{ today }}" value="{{ selected_date }}" onchange="this.form.submit()" required>
+</form>
+
+<br>
+
+{% if selected_date %}
 <form method="POST">
     {% csrf_token %}
 
-    <label>Date:</label><br>
-    <input type="date" name="date" required><br><br>
+    <input type="hidden" name="date" value="{{ selected_date }}">
 
-    <label>Time:</label><br>
-    <input type="time" name="time" required><br><br>
+    <label>Available Time Slots:</label><br>
+    <select name="time" required>
+        {% for slot in time_slots %}
+            <option value="{{ slot }}">{{ slot }}</option>
+        {% empty %}
+            <option disabled>No slots available</option>
+        {% endfor %}
+    </select><br><br>
 
     <button type="submit">Confirm Booking</button>
 </form>
+{% endif %}

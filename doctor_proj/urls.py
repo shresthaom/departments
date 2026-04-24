@@ -22,9 +22,10 @@ urlpatterns = [
     path('', include('patients.urls')), 
     path('admin/', admin.site.urls),
     path('homepage/',include('HomePage.urls')),
-    path('aboutus/',include('AboutUs.urls')),
     path('doctors/',include('doctors.urls')),
     path('hospitals/',include('hospitals.urls')),
     path('appointment/',include('appointment.urls')),
+    # path("admin/", admin.site.urls),
+    # path("appointment/", include("appointment.urls")),
     
 ]

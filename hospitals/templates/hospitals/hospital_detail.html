@@ -1,0 +1,54 @@
+<a href="{% url 'hospital_list' %}">← Back to Hospitals</a>
+
+<h2>{{ hospital.name }}</h2>
+<p>{{ hospital.address }}</p>
+
+<hr>
+
+<!-- SEARCH -->
+<form method="GET">
+    <input type="text" name="search"
+           placeholder="Search doctor name or specialization"
+           value="{{ search }}">
+
+    <button type="submit">Search</button>
+</form>
+
+<hr>
+
+<!-- FILTER -->
+<form method="GET">
+    <select name="department">
+        <option value="">All Departments</option>
+
+        {% for dept in departments %}
+            <option value="{{ dept.department_id }}"
+                {% if dept_id == dept.department_id|stringformat:"s" %}selected{% endif %}>
+                {{ dept.name }}
+            </option>
+        {% endfor %}
+    </select>
+
+    <button type="submit">Filter</button>
+</form>
+
+<hr>
+
+<h3>Doctors in {{ hospital.name }}</h3>
+
+
+
+{% for doctor in doctors %}
+    <div style="border:1px solid #ddd; padding:10px; margin:10px;">
+
+        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
+            <b>{{ doctor.name }}</b>
+        </a><br>
+
+        {{ doctor.specialization }}<br>
+        Department: {{ doctor.department.name }}
+
+    </div>
+{% empty %}
+    <p>No doctors found in this hospital</p>
+{% endfor %}

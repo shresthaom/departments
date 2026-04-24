@@ -1,4 +1,103 @@
-{% extends "HomePage/base.html" %}   
-{% block content %}
-    <h1>HomePage</h1>
-{% endblock content %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Homepage</title>
+
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            background: #fff;
+            transition: 0.2s;
+        }
+
+        .card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .top-box {
+            background: #f0f0f0;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div style="background:#2c3e50; padding:12px; color:white; display:flex; justify-content:space-between; align-items:center;">
+
+    <div>
+        <a href="{% url 'home' %}" style="color:white; margin-right:15px; text-decoration:none;">
+            Home
+        </a>
+
+        <a href="#" style="color:white; margin-right:15px; text-decoration:none;">
+            About
+        </a>
+    </div>
+
+    <div>
+        {% if user.is_authenticated %}
+            <span style="margin-right:10px;">Hello, {{ user.username }}</span>
+            <a href="{% url 'logout' %}" style="color:#e74c3c; text-decoration:none;">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}" style="color:#2ecc71; margin-right:10px;">Login</a>
+            <a href="{% url 'register' %}" style="color:#3498db;">Register</a>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- APPOINTMENT BOX (ONLY LOGGED IN USERS) -->
+{% if user.is_authenticated %}
+<div class="top-box">
+    <h3>You have {{ appointment_count }} upcoming appointment(s)</h3>
+    <a href="{% url 'upcoming_appointments' %}">View Appointments →</a>
+</div>
+{% endif %}
+
+<!-- DOCTORS -->
+<h2>Doctors</h2>
+<div class="grid">
+    {% for doctor in doctors %}
+        <a class="card-link" href="{% url 'doctor_detail' doctor.doctor_id %}">
+            <div class="card">
+                <h4>{{ doctor.name }}</h4>
+                <p>{{ doctor.specialization }}</p>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+<!-- HOSPITALS -->
+<h2>Hospitals</h2>
+<div class="grid">
+    {% for hospital in hospitals %}
+        <a class="card-link" href="{% url 'hospital_detail' hospital.hospital_id %}">
+            <div class="card">
+                <h4>{{ hospital.name }}</h4>
+                <p>{{ hospital.location }}</p>
+            </div>
+        </a>
+    {% endfor %}
+</div>
+
+</body>
+</html>
