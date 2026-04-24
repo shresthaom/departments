@@ -12,7 +12,7 @@ class Doctor(models.Model):
 
     email = models.EmailField(unique=True)
     fees = models.DecimalField(max_digits=8, decimal_places=2)
-    phone = models.CharField(max_length=10)
+    phone = models.CharField(max_length=13)
     a_status = models.BooleanField(default=True)
 
     def __str__(self):
