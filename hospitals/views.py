@@ -1,10 +1,11 @@
-
-
-
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
+from django.utils import timezone
+
 from .models import Hospital, Department
 from doctors.models import Doctor
+from appointment.models import Appointment
+from appointment.views import get_appt_datetime
 
 
 # -------------------------------
@@ -24,17 +25,16 @@ def hospital_list(request):
 
 
 # -------------------------------
-# 🏥 Hospital Detail (WITH RANKING)
+# 🏥 Hospital Detail (FINAL)
 # -------------------------------
 def hospital_detail(request, hospital_id):
     hospital = get_object_or_404(Hospital, hospital_id=hospital_id)
 
+    # 🧑‍⚕️ Doctors of this hospital
     doctors = Doctor.objects.filter(hospital=hospital, a_status=True)
 
-    search = request.GET.get('search', '')
-    dept_id = request.GET.get('department', '')
-
     # 🔍 Search
+    search = request.GET.get('search', '')
     if search:
         doctors = doctors.filter(
             Q(name__icontains=search) |
@@ -42,10 +42,11 @@ def hospital_detail(request, hospital_id):
         )
 
     # 🎯 Department filter
+    dept_id = request.GET.get('department', '')
     if dept_id:
-        doctors = doctors.filter(department_id=dept_id)
+        doctors = doctors.filter(department__id=dept_id)
 
-    # 🧠 -------- RANKING START --------
+    # 🧠 -------- RANKING --------
     doctors = list(doctors.distinct())
 
     def calculate_score(doc):
@@ -70,16 +71,42 @@ def hospital_detail(request, hospital_id):
         doc.score = calculate_score(doc)
 
     doctors = sorted(doctors, key=lambda x: x.score, reverse=True)
-    # 🧠 -------- RANKING END --------
+    # --------------------------
 
+    # 📚 Departments of this hospital
     departments = Department.objects.filter(hospitals=hospital)
 
+    # 📅 Appointment summary (NEW)
+    if request.user.is_authenticated:
+        appointments = Appointment.objects.filter(patient=request.user)
+
+        past = []
+        upcoming = []
+        now = timezone.now()
+
+        for appt in appointments:
+            if appt.status == "cancelled":
+                continue
+
+            if get_appt_datetime(appt) < now:
+                past.append(appt)
+            else:
+                upcoming.append(appt)
+    else:
+        past = []
+        upcoming = []
+
+    # 📦 Final response
     return render(request, 'hospitals/hospital_detail.html', {
         'hospital': hospital,
         'doctors': doctors,
         'departments': departments,
         'search': search,
-        'dept_id': dept_id
+        'dept_id': dept_id,
+
+        # appointment box
+        'upcoming_count': len(upcoming),
+        'past_count': len(past),
     })
 
 
