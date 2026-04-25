@@ -5,10 +5,9 @@
 
 <hr>
 
-<!-- 🔍 SEARCH + FILTER (COMBINED FORM) -->
+
 <form method="GET">
 
-    <!-- SEARCH -->
     <input type="text" name="search"
            placeholder="Search doctor name or specialization"
            value="{{ search }}">
@@ -17,7 +16,6 @@
 
     <br><br>
 
-    <!-- FILTER -->
     <select name="department">
         <option value="">All Departments</option>
 
@@ -37,17 +35,40 @@
 
 <h3>Doctors in {{ hospital.name }}</h3>
 
+
+{% if dept_id %}
+    <h4 style="color:#444;">
+        🔎 Doctors are ranked by experience,  qualification and fees
+    </h4>
+{% endif %}
+
 {% for doctor in doctors %}
-    <div style="border:1px solid #ddd; padding:10px; margin:10px;">
+<div style="border:1px solid #ddd; padding:15px; margin:10px; border-radius:10px;">
 
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
-            <b>{{ doctor.name }}</b>
-        </a><br>
+  
+    <a href="{% url 'doctor_detail' doctor.doctor_id %}">
+        <b style="font-size:18px;">{{ doctor.name }}</b>
+    </a>
 
-        {{ doctor.specialization }}<br>
-        Department: {{ doctor.department.name }}
+  
+    {% if dept_id and forloop.counter == 1 %}
+        <span style="color:green; font-weight:bold;"> 🏆 Top Doctor</span>
+    {% endif %}
 
-    </div>
+    <br><br>
+
+    {% if dept_id %}
+        <b>Rank:</b> #{{ forloop.counter }} <br>
+    {% endif %}
+
+    <b>Specialization:</b> {{ doctor.specialization }} <br>
+    <b>Department:</b> {{ doctor.department.name }} <br>
+    <b>Experience:</b> {{ doctor.experience_years }} years <br>
+    <b>Qualification:</b> {{ doctor.qualification }} <br>
+    <b>Fees:</b> Rs. {{ doctor.fees }} <br>
+
+</div>
+
 {% empty %}
     <p>No doctors found in this hospital</p>
 {% endfor %}
