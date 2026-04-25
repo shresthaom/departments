@@ -1,3 +1,6 @@
+
+
+
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from .models import Hospital, Department
@@ -8,7 +11,7 @@ from doctors.models import Doctor
 # 🏥 Hospital List
 # -------------------------------
 def hospital_list(request):
-    query = request.GET.get('q')
+    query = request.GET.get('q', '')
 
     hospitals = Hospital.objects.all()
     if query:
@@ -26,52 +29,49 @@ def hospital_list(request):
 def hospital_detail(request, hospital_id):
     hospital = get_object_or_404(Hospital, hospital_id=hospital_id)
 
-    # only available doctors in this hospital
     doctors = Doctor.objects.filter(hospital=hospital, a_status=True)
 
     search = request.GET.get('search', '')
     dept_id = request.GET.get('department', '')
 
-    # 🔍 Search doctors
+    # 🔍 Search
     if search:
         doctors = doctors.filter(
             Q(name__icontains=search) |
             Q(specialization__icontains=search)
         )
 
-    # 🎯 Filter by department
+    # 🎯 Department filter
     if dept_id:
         doctors = doctors.filter(department_id=dept_id)
 
-    # 🧠 -------- RANKING LOGIC --------
-    doctors = list(doctors.distinct())  # convert queryset → list
+    # 🧠 -------- RANKING START --------
+    doctors = list(doctors.distinct())
 
     def calculate_score(doc):
         score = 0
 
-        # Experience (strong factor)
-        score += doc.experience_years * 5
+        experience = getattr(doc, 'experience_years', 0) or 0
+        qualification = getattr(doc, 'qualification', '') or ''
 
-        # Qualification
-        if "MD" in doc.qualification:
+        score += experience * 5
+
+        if "MD" in qualification:
             score += 30
-        elif "MBBS" in doc.qualification:
+        elif "MBBS" in qualification:
             score += 15
 
-        # Availability bonus
         if doc.a_status:
             score += 10
 
         return score
 
-    # assign score
     for doc in doctors:
         doc.score = calculate_score(doc)
 
-    # sort by score (highest first)
     doctors = sorted(doctors, key=lambda x: x.score, reverse=True)
+    # 🧠 -------- RANKING END --------
 
-    # 🏥 Departments offered by this hospital
     departments = Department.objects.filter(hospitals=hospital)
 
     return render(request, 'hospitals/hospital_detail.html', {

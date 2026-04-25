@@ -32,6 +32,9 @@ docinfos=[
 #     return render(request,'doctors/doctors.html')
 
 
+from django.shortcuts import render
+from .models import Doctor
+
 def calculate_score(doctor):
     score = 0
 
