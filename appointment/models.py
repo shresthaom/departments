@@ -11,6 +11,9 @@ class Appointment(models.Model):
     patient = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
 
+    class Meta:
+        unique_together = ('doctor', 'appointment_date', 'appointment_time')
+
     
 
     def __str__(self):

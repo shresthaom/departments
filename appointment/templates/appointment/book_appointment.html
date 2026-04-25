@@ -1,13 +1,23 @@
 <a href="{% url 'doctor_detail' doctor.doctor_id %}">← Back to Doctor</a>
+
 <h2>Book Appointment with {{ doctor.name }}</h2>
 
+<!-- DATE SELECTION FORM -->
 <form method="GET">
     <label>Select Date:</label><br>
-    <input type="date" name="date" min="{{ today }}" value="{{ selected_date }}" onchange="this.form.submit()" required>
+    <input 
+        type="date" 
+        name="date" 
+        id="date_input"
+        value="{{ selected_date }}" 
+        required
+        onchange="this.form.submit()"
+    >
 </form>
 
 <br>
 
+<!-- TIME SLOT FORM -->
 {% if selected_date %}
 <form method="POST">
     {% csrf_token %}
@@ -21,8 +31,46 @@
         {% empty %}
             <option disabled>No slots available</option>
         {% endfor %}
-    </select><br><br>
+    </select>
 
-    <button type="submit">Confirm Booking</button>
+    <br><br>
+
+    <button type="submit">Continue</button>
 </form>
 {% endif %}
+
+<br>
+
+<!-- SHOW DJANGO MESSAGES -->
+{% if messages %}
+    {% for message in messages %}
+        <p style="color:red;">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<script>
+    const dateInput = document.getElementById("date_input");
+
+    const today = new Date();
+    const maxDate = new Date();
+    maxDate.setDate(today.getDate() + 14);
+
+    function formatDate(d) {
+        return d.toISOString().split("T")[0];
+    }
+
+    // Restrict date range
+    dateInput.min = formatDate(today);
+    dateInput.max = formatDate(maxDate);
+
+    // Disable Saturdays
+    dateInput.addEventListener("change", function () {
+        const selectedDate = new Date(this.value);
+        const day = selectedDate.getDay(); // 6 = Saturday
+
+        if (day === 6) {
+            alert("Hospitals are closed on Saturdays. Please choose another day.");
+            this.value = "";
+        }
+    });
+</script>
