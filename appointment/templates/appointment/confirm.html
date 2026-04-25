@@ -1,19 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Appointment</title>
+</head>
+
+<body>
+
 {% if messages %}
 <script>
     {% for message in messages %}
         alert("{{ message }}");
-        window.location.href = "/";
     {% endfor %}
 </script>
 {% endif %}
 
 <h2>Confirm Appointment</h2>
 
-<p>Doctor: {{ doctor.name }}</p>
-<p>Date: {{ data.appointment_date }}</p>
-<p>Time: {{ data.appointment_time }}</p>
+<p><b>Doctor:</b> {{ doctor.name }}</p>
+<p><b>Date:</b> {{ data.appointment_date }}</p>
+<p><b>Time:</b> {{ data.appointment_time }}</p>
 
 <form method="POST">
     {% csrf_token %}
     <button type="submit">Confirm Booking</button>
 </form>
+
+</body>
+</html>
