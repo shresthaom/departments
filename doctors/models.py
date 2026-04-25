@@ -6,6 +6,7 @@ class Doctor(models.Model):
     name = models.CharField(max_length=100)
     qualification = models.CharField(max_length=100)
     specialization = models.CharField(max_length=100)
+    experience_years = models.PositiveIntegerField(default=0)
     hospital = models.ForeignKey('hospitals.Hospital', on_delete=models.CASCADE, null=True, blank=True)
 
     department = models.ForeignKey('hospitals.Department', on_delete=models.CASCADE, null=True, blank=True)
