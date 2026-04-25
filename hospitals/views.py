@@ -21,7 +21,7 @@ def hospital_list(request):
 
 
 # -------------------------------
-# 🏥 Hospital Detail
+# 🏥 Hospital Detail (WITH RANKING)
 # -------------------------------
 def hospital_detail(request, hospital_id):
     hospital = get_object_or_404(Hospital, hospital_id=hospital_id)
@@ -32,7 +32,7 @@ def hospital_detail(request, hospital_id):
     search = request.GET.get('search', '')
     dept_id = request.GET.get('department', '')
 
-    # 🔍 Search doctors by name or specialization
+    # 🔍 Search doctors
     if search:
         doctors = doctors.filter(
             Q(name__icontains=search) |
@@ -43,12 +43,40 @@ def hospital_detail(request, hospital_id):
     if dept_id:
         doctors = doctors.filter(department_id=dept_id)
 
-    # 🏥 Departments offered by this hospital (ManyToMany)
+    # 🧠 -------- RANKING LOGIC --------
+    doctors = list(doctors.distinct())  # convert queryset → list
+
+    def calculate_score(doc):
+        score = 0
+
+        # Experience (strong factor)
+        score += doc.experience_years * 5
+
+        # Qualification
+        if "MD" in doc.qualification:
+            score += 30
+        elif "MBBS" in doc.qualification:
+            score += 15
+
+        # Availability bonus
+        if doc.a_status:
+            score += 10
+
+        return score
+
+    # assign score
+    for doc in doctors:
+        doc.score = calculate_score(doc)
+
+    # sort by score (highest first)
+    doctors = sorted(doctors, key=lambda x: x.score, reverse=True)
+
+    # 🏥 Departments offered by this hospital
     departments = Department.objects.filter(hospitals=hospital)
 
     return render(request, 'hospitals/hospital_detail.html', {
         'hospital': hospital,
-        'doctors': doctors.distinct(),
+        'doctors': doctors,
         'departments': departments,
         'search': search,
         'dept_id': dept_id
@@ -61,7 +89,6 @@ def hospital_detail(request, hospital_id):
 def department_detail(request, department_id):
     department = get_object_or_404(Department, id=department_id)
 
-    # safer query (works even without related_name)
     doctors = Doctor.objects.filter(department=department, a_status=True)
 
     return render(request, 'hospitals/department_detail.html', {

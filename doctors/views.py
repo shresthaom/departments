@@ -32,10 +32,22 @@ docinfos=[
 #     return render(request,'doctors/doctors.html')
 
 
-from django.shortcuts import render
-from .models import Doctor
+def calculate_score(doctor):
+    score = 0
 
+    if doctor.a_status:
+        score += 40
 
+    score += doctor.experience_years * 2
+
+    if "MD" in doctor.qualification:
+        score += 20
+    elif "MBBS" in doctor.qualification:
+        score += 10
+
+    score += max(0, 50 - float(doctor.fees))
+
+    return score
 
 def doctor_list(request):
     available = request.GET.get('available')
@@ -45,8 +57,10 @@ def doctor_list(request):
     if available == 'true':
         doctors = doctors.filter(a_status=True)
 
-    return render(request, 'doctors/doctors.html', {'doctors': doctors})
+    # 🔥 ADD THIS LINE (ranking)
+    doctors = sorted(doctors, key=lambda d: calculate_score(d), reverse=True)
 
+    return render(request, 'doctors/doctors.html', {'doctors': doctors})
 
 def doctor_detail(request, doctor_id):
     doctor = get_object_or_404(Doctor, doctor_id=doctor_id)
