@@ -8,8 +8,10 @@ class HospitalAdmin(admin.ModelAdmin):
 
 @admin.register(Department)
 class DepartmentAdmin(admin.ModelAdmin):
-    list_display = ('name', 'hospital')
-    list_filter = ('hospital',)
+    list_display = ('name', 'get_hospitals')
+    list_filter = ('hospitals',)
 
-    def get_queryset(self, request):
-        return super().get_queryset(request).select_related('hospital')
+    def get_hospitals(self, obj):
+        return ", ".join([h.name for h in obj.hospitals.all()])
+    
+    get_hospitals.short_description = 'Hospitals'

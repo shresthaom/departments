@@ -5,38 +5,37 @@
 
 <hr>
 
-<!-- SEARCH -->
+<!-- 🔍 SEARCH + FILTER (COMBINED FORM) -->
 <form method="GET">
+
+    <!-- SEARCH -->
     <input type="text" name="search"
            placeholder="Search doctor name or specialization"
            value="{{ search }}">
 
     <button type="submit">Search</button>
-</form>
 
-<hr>
+    <br><br>
 
-<!-- FILTER -->
-<form method="GET">
+    <!-- FILTER -->
     <select name="department">
         <option value="">All Departments</option>
 
         {% for dept in departments %}
-            <option value="{{ dept.department_id }}"
-                {% if dept_id == dept.department_id|stringformat:"s" %}selected{% endif %}>
+            <option value="{{ dept.id }}"
+                {% if dept.id|stringformat:"s" == dept_id %}selected{% endif %}>
                 {{ dept.name }}
             </option>
         {% endfor %}
     </select>
 
     <button type="submit">Filter</button>
+
 </form>
 
 <hr>
 
 <h3>Doctors in {{ hospital.name }}</h3>
-
-
 
 {% for doctor in doctors %}
     <div style="border:1px solid #ddd; padding:10px; margin:10px;">

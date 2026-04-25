@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'HomePage.apps.HomepageConfig',
     'appointment',
     'patients',
-    
+  
     
     'django.contrib.admin',
     'django.contrib.auth',

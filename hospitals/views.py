@@ -1,9 +1,12 @@
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Q
 from .models import Hospital, Department
 from doctors.models import Doctor
 
 
-# Hospital List
+# -------------------------------
+# 🏥 Hospital List
+# -------------------------------
 def hospital_list(request):
     query = request.GET.get('q')
 
@@ -17,32 +20,31 @@ def hospital_list(request):
     })
 
 
-# Hospital detail
-
-
-
+# -------------------------------
+# 🏥 Hospital Detail
+# -------------------------------
 def hospital_detail(request, hospital_id):
     hospital = get_object_or_404(Hospital, hospital_id=hospital_id)
 
+    # only available doctors in this hospital
     doctors = Doctor.objects.filter(hospital=hospital, a_status=True)
 
     search = request.GET.get('search', '')
     dept_id = request.GET.get('department', '')
 
-    # Search doc by name or dept
+    # 🔍 Search doctors by name or specialization
     if search:
         doctors = doctors.filter(
-            name__icontains=search
-        ) | doctors.filter(
-            specialization__icontains=search
+            Q(name__icontains=search) |
+            Q(specialization__icontains=search)
         )
 
-    # Filter by dept
+    # 🎯 Filter by department
     if dept_id:
-        doctors = doctors.filter(department__department_id=dept_id)
+        doctors = doctors.filter(department_id=dept_id)
 
-    # only departments of this hospital
-    departments = Department.objects.filter(hospital=hospital)
+    # 🏥 Departments offered by this hospital (ManyToMany)
+    departments = Department.objects.filter(hospitals=hospital)
 
     return render(request, 'hospitals/hospital_detail.html', {
         'hospital': hospital,
@@ -52,10 +54,15 @@ def hospital_detail(request, hospital_id):
         'dept_id': dept_id
     })
 
-# Department detail 
+
+# -------------------------------
+# 🧪 Department Detail
+# -------------------------------
 def department_detail(request, department_id):
-    department = get_object_or_404(Department, department_id=department_id)
-    doctors = department.doctors.filter(a_status=True)
+    department = get_object_or_404(Department, id=department_id)
+
+    # safer query (works even without related_name)
+    doctors = Doctor.objects.filter(department=department, a_status=True)
 
     return render(request, 'hospitals/department_detail.html', {
         'department': department,
