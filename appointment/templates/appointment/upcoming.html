@@ -1,59 +1,154 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Appointments</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
+{% block title %}Appointments{% endblock %}
 
-<h2>Your Appointments</h2>
+{% block extra_css %}
+<style>
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 10px;
+}
 
-<!-- UPCOMING -->
-<h3>Upcoming</h3>
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #243b5a;
+}
 
-{% for appt in upcoming %}
-    <div style="border:1px solid #ccc; padding:12px; margin-bottom:12px;">
+.section-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #243b5a;
+}
 
-        <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
-        <p><b>Date:</b> {{ appt.appointment_date }}</p>
-        <p><b>Time:</b> {{ appt.appointment_time }}</p>
+/* Card */
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
 
-        <a href="{% url 'reschedule_appointment' appt.appointment_id %}">
-            Reschedule
-        </a>
+.card.past {
+    opacity: 0.7;
+}
 
-    </div>
-{% empty %}
-    <p>No upcoming appointments.</p>
-{% endfor %}
+/* Info */
+.card-info p {
+    margin: 5px 0;
+}
+
+/* Actions */
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    color: white;
+}
+
+.btn.secondary {
+    background: #243b5a;
+}
+
+.btn.success {
+    background: #28a745;
+}
+
+.btn.warning {
+    background: #ffc107;
+    color: black;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* Completed */
+.completed {
+    color: green;
+    font-weight: bold;
+}
+
+/* Empty */
+.empty {
+    color: gray;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2>Your Appointments</h2>
+
+    <!-- UPCOMING -->
+    <h3 class="section-title">Upcoming</h3>
+
+    {% for appt in upcoming %}
+        <div class="card">
+
+            <div class="card-info">
+                <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
+                <p><b>Date:</b> {{ appt.appointment_date }}</p>
+                <p><b>Time:</b> {{ appt.appointment_time|time:"h:i A" }}</p>
+            </div>
+
+            <div class="card-actions">
+                <a href="{% url 'reschedule_appointment' appt.appointment_id %}" class="btn secondary">
+                    Reschedule
+                </a>
+            </div>
+
+        </div>
+    {% empty %}
+        <p class="empty">No upcoming appointments.</p>
+    {% endfor %}
 
 
-<!-- PAST -->
-<h3>Past Appointments</h3>
+    <!-- PAST -->
+    <h3 class="section-title">Past Appointments</h3>
 
-{% for appt in past %}
-    <div style="border:1px solid #aaa; padding:12px; margin-bottom:12px;">
+    {% for appt in past %}
+        <div class="card past">
 
-        <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
-        <p><b>Date:</b> {{ appt.appointment_date }}</p>
-        <p><b>Time:</b> {{ appt.appointment_time }}</p>
+            <div class="card-info">
+                <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
+                <p><b>Date:</b> {{ appt.appointment_date }}</p>
+                <p><b>Time:</b> {{ appt.appointment_time|time:"h:i A" }}</p>
+            </div>
 
-        {% if appt.status != "completed" %}
-            <a href="{% url 'mark_completed' appt.appointment_id %}" style="color:green;">
-                Mark as Completed
-            </a>
+            <div class="card-actions">
+                {% if appt.status != "completed" %}
+                    <a href="{% url 'mark_completed' appt.appointment_id %}" class="btn success">
+                        Mark Completed
+                    </a>
 
-            <a href="{% url 'reschedule_appointment' appt.appointment_id %}" style="color:orange; margin-left:10px;">
-                Reschedule
-            </a>
-        {% else %}
-            <p style="color:green;">✔ Completed</p>
-        {% endif %}
+                    <a href="{% url 'reschedule_appointment' appt.appointment_id %}" class="btn warning">
+                        Reschedule
+                    </a>
+                {% else %}
+                    <span class="completed">✔ Completed</span>
+                {% endif %}
+            </div>
 
-    </div>
-{% empty %}
-    <p>No past appointments.</p>
-{% endfor %}
+        </div>
+    {% empty %}
+        <p class="empty">No past appointments.</p>
+    {% endfor %}
 
-</body>
-</html>
+</div>
+
+{% endblock %}

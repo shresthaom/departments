@@ -1,64 +1,72 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Reschedule Appointment</title>
-</head>
+{% extends 'base.html' %}
+{% load static %}
 
-<body>
+{% block title %}Reschedule Appointment{% endblock %}
 
-<a href="{% url 'upcoming_appointments' %}">← Back</a>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'appointment/reschedule.css' %}">
+{% endblock %}
 
-<h2>Reschedule Appointment</h2>
+{% block content %}
 
-<p><b>Doctor:</b> {{ appointment.doctor.name }}</p>
-<p><b>Current Date:</b> {{ appointment.appointment_date }}</p>
-<p><b>Current Time:</b> {{ appointment.appointment_time }}</p>
-<p><b>Status:</b> {{ appointment.status }}</p>
+<div class="container">
 
-<br>
+    <a href="{% url 'upcoming_appointments' %}" class="back-link">← Back</a>
 
-<form method="GET">
-    <label>Select New Date:</label><br>
-    <input 
-        type="date" 
-        name="date" 
-        id="appointment_date"
-        value="{{ selected_date }}" 
-        required
-        onchange="this.form.submit()"
-    >
-</form>
+    <h2>Reschedule Appointment</h2>
 
-<br>
+    <!-- APPOINTMENT INFO -->
+    <div class="info-card">
+        <p><b>Doctor:</b> {{ appointment.doctor.name }}</p>
+        <p><b>Current Date:</b> {{ appointment.appointment_date }}</p>
+        <p><b>Current Time:</b> {{ appointment.appointment_time }}</p>
+        <p><b>Status:</b> {{ appointment.status }}</p>
+    </div>
 
-{% if selected_date %}
-<form method="POST">
-    {% csrf_token %}
+    <!-- DATE -->
+    <div class="card">
+        <form method="GET">
+            <label>Select New Date</label>
+            <input 
+                type="date" 
+                name="date" 
+                id="appointment_date"
+                value="{{ selected_date }}" 
+                required
+                onchange="this.form.submit()"
+            >
+        </form>
+    </div>
 
-    <input type="hidden" name="date" value="{{ selected_date }}">
+    {% if selected_date %}
+    <!-- TIME -->
+    <div class="card">
+        <form method="POST">
+            {% csrf_token %}
 
-    <label>Available Time Slots:</label><br>
-    <select name="time" required>
-        {% for slot in time_slots %}
-            <option value="{{ slot }}">{{ slot }}</option>
-        {% empty %}
-            <option disabled>No slots available</option>
+            <input type="hidden" name="date" value="{{ selected_date }}">
+
+            <label>Available Time Slots</label>
+            <select name="time" required>
+                {% for slot in time_slots %}
+                    <option value="{{ slot }}">{{ slot }}</option>
+                {% empty %}
+                    <option disabled>No slots available</option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn">Confirm Reschedule</button>
+        </form>
+    </div>
+    {% endif %}
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="error">{{ message }}</p>
         {% endfor %}
-    </select>
+    {% endif %}
 
-    <br><br>
-
-    <button type="submit">Confirm Reschedule</button>
-</form>
-{% endif %}
-
-<br>
-
-{% if messages %}
-    {% for message in messages %}
-        <p style="color:red;">{{ message }}</p>
-    {% endfor %}
-{% endif %}
+</div>
 
 <script>
     const dateInput = document.getElementById("appointment_date");
@@ -85,5 +93,4 @@
     });
 </script>
 
-</body>
-</html>
+{% endblock %}

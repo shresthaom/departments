@@ -1,0 +1,112 @@
+/* CONTAINER */
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+
+/* HEADER */
+.hospital-header {
+    margin-bottom: 20px;
+}
+
+.hospital-header h2 {
+    color: #1e3a5f;
+}
+
+.hospital-header p {
+    color: #475569;
+}
+
+/* FILTER */
+.filter-card {
+    background: #f8fafc;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+}
+
+.filter-form {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+input, select {
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+/* BUTTON */
+.btn {
+    background: #1e3a5f;
+    color: white;
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #16324a;
+}
+
+/* SECTION */
+.section-title {
+    margin-bottom: 10px;
+    color: #334155;
+}
+
+/* RANKING NOTE */
+.ranking-note {
+    margin-bottom: 15px;
+    color: #1e3a5f;
+    font-weight: 600;
+}
+
+/* GRID */
+.doctor-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* CARD */
+.doctor-card {
+    background: white;
+    border: 1px solid #e2e8f0;
+    padding: 15px;
+    border-radius: 10px;
+    transition: 0.2s;
+}
+
+.doctor-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* NAME */
+.doctor-name {
+    font-weight: bold;
+    text-decoration: none;
+    color: #1e3a5f;
+}
+
+/* TOP DOCTOR */
+.top-doctor {
+    color: #16a34a;
+    font-weight: bold;
+}
+
+/* RANK */
+.rank {
+    font-size: 14px;
+    color: #64748b;
+}
+
+/* EMPTY */
+.empty {
+    color: #64748b;
+}

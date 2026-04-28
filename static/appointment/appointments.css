@@ -1,0 +1,87 @@
+/* Container */
+.container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 10px;
+}
+
+/* Titles */
+h2 {
+    text-align: center;
+    margin-bottom: 30px;
+    color: #243b5a;
+}
+
+.section-title {
+    margin-top: 30px;
+    margin-bottom: 10px;
+    color: #243b5a;
+}
+
+/* Card */
+.card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* Past card styling */
+.card.past {
+    opacity: 0.8;
+}
+
+/* Info */
+.card-info p {
+    margin: 5px 0;
+}
+
+/* Actions */
+.card-actions {
+    display: flex;
+    gap: 10px;
+}
+
+/* Buttons */
+.btn {
+    padding: 8px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 14px;
+    color: white;
+}
+
+/* Button colors */
+.btn.secondary {
+    background: #243b5a;
+}
+
+.btn.success {
+    background: #28a745;
+}
+
+.btn.warning {
+    background: #ffc107;
+    color: black;
+}
+
+/* Hover */
+.btn:hover {
+    opacity: 0.85;
+}
+
+/* Completed text */
+.completed {
+    color: green;
+    font-weight: bold;
+}
+
+/* Empty message */
+.empty {
+    color: gray;
+    margin-top: 10px;
+}

@@ -237,3 +237,17 @@ def reschedule_appointment(request, appointment_id):
         "time_slots": time_slots,
         "selected_date": selected_date
     })
+
+@login_required
+def cancel_appointment(request, appointment_id):
+    appt = get_object_or_404(
+        Appointment,
+        appointment_id=appointment_id,
+        patient=request.user
+    )
+
+    appt.status = "cancelled"
+    appt.save()
+
+    messages.success(request, "Appointment cancelled successfully.")
+    return redirect("upcoming_appointments")

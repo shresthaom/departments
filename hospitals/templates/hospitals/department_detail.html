@@ -1,17 +1,41 @@
-<h2>Department: {{ department.name }}</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-<h3>Doctors</h3>
+{% block title %}Department{% endblock %}
 
-{% for doctor in doctors %}
-    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-        <p><strong>{{ doctor.name }}</strong></p>
-        <p>{{ doctor.specialization }}</p>
-        <p>Fees: {{ doctor.fees }}</p>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hospitals/department.css' %}">
+{% endblock %}
 
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
-            View Profile
-        </a>
+{% block content %}
+
+<div class="container">
+
+    <h2 class="page-title">Department: {{ department.name }}</h2>
+
+    <h3 class="section-title">Doctors</h3>
+
+    <div class="doctor-grid">
+
+        {% for doctor in doctors %}
+            <div class="doctor-card">
+
+                <h4>{{ doctor.name }}</h4>
+                <p>{{ doctor.specialization }}</p>
+                <p>Fees: Rs. {{ doctor.fees }}</p>
+
+                <a href="{% url 'doctor_detail' doctor.doctor_id %}" class="btn">
+                    View Profile
+                </a>
+
+            </div>
+
+        {% empty %}
+            <p class="empty">No available doctors</p>
+        {% endfor %}
+
     </div>
-{% empty %}
-    <p>No available doctors</p>
-{% endfor %}
+
+</div>
+
+{% endblock %}

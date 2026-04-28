@@ -1,48 +1,45 @@
-<a href="{% url 'hospital_list' %}">🏥 Hospitals</a>
-<a href="{% url 'patient_dashboard' %}">📊 Dashboard</a>
+{% extends 'base.html' %}
+{% load static %}
 
-<h2>Doctors</h2>
+{% block title %}Doctors{% endblock %}
 
-<div style="margin-bottom: 15px;">
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hospitals/doctor.css' %}">
+{% endblock %}
 
-    <a href="{% url 'doctor_list' %}"
-       style="padding:6px 10px; background:black; color:white; text-decoration:none;">
-        All Doctors
-    </a>
+{% block content %}
 
-    <a href="{% url 'doctor_list' %}?available=true"
-       style="padding:6px 10px; background:green; color:white; text-decoration:none; margin-left:5px;">
-        Available Doctors
-    </a>
+<h2 class="page-title">Doctors</h2>
 
+<div class="filter-box">
+    <a href="{% url 'doctor_list' %}" class="btn black">All Doctors</a>
+    <a href="{% url 'doctor_list' %}?available=true" class="btn green">Available Doctors</a>
 </div>
 
-<div style="display:flex; flex-wrap:wrap; gap:10px;">
+<div class="doctor-container">
 
     {% for doctor in doctors %}
+        <a href="{% url 'doctor_detail' doctor.doctor_id %}" class="card-link">
 
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}" style="text-decoration:none; color:black;">
-
-            <div style="border:1px solid #ccc; padding:10px; width:200px;">
+            <div class="doctor-card">
 
                 <h3>{{ doctor.name }}</h3>
-
                 <p>{{ doctor.specialization }}</p>
-
                 <p>{{ doctor.qualification }}</p>
 
                 {% if doctor.a_status %}
-                    <p style="color:green;">Available</p>
+                    <p class="status available">Available</p>
                 {% else %}
-                    <p style="color:red;">Not Available</p>
+                    <p class="status not">Not Available</p>
                 {% endif %}
 
             </div>
 
         </a>
-
     {% empty %}
-        <p>No doctors found.</p>
+        <p class="empty">No doctors found.</p>
     {% endfor %}
 
 </div>
+
+{% endblock %}

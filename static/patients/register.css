@@ -1,0 +1,65 @@
+/* CENTER PAGE */
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+    font-family: Arial, sans-serif;
+}
+
+/* CARD */
+.card {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+    width: 300px;
+    text-align: center;
+    border: 1px solid #e2e8f0;
+}
+
+/* TITLE */
+h2 {
+    color: #1e3a5f;
+    margin-bottom: 20px;
+}
+
+/* INPUTS */
+input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+}
+
+/* BUTTON */
+.btn {
+    width: 100%;
+    background: #1e3a5f;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #16324a;
+}
+
+/* LINK */
+.login-link {
+    margin-top: 15px;
+    font-size: 14px;
+}
+
+.login-link a {
+    color: #2563eb;
+    text-decoration: none;
+}
+
+/* ERROR */
+.error {
+    color: red;
+    margin-bottom: 10px;
+}

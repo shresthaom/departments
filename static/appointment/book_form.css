@@ -1,0 +1,77 @@
+/* BACKGROUND */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #1e3a5f, #2563eb);
+    min-height: 100vh;
+}
+
+/* MAIN CONTAINER */
+.container {
+    max-width: 450px;
+    margin: 60px auto;
+}
+
+/* TITLE */
+h2 {
+    color: white;
+    margin-bottom: 20px;
+}
+
+/* DOCTOR BOX */
+.doctor-box {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-weight: 500;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+}
+
+/* FORM CARD */
+.form-card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+/* LABELS */
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* INPUTS */
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #cbd5e1;
+}
+
+/* TEXTAREA */
+textarea {
+    height: 80px;
+    resize: none;
+}
+
+/* BUTTON */
+button {
+    margin-top: 20px;
+    width: 100%;
+    background: #2563eb;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+button:hover {
+    background: #1e40af;
+}

@@ -1,17 +1,34 @@
-<a href="{% url 'doctor_list' %}">← Back to Doctors</a>
-<br>
-<a href="{% url 'hospital_list' %}">View Hospitals</a>
+{% extends 'base.html' %}
+{% load static %}
 
-<h2>{{ doctor.name }}</h2>
+{% block title %}Doctor Detail{% endblock %}
 
-<p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
-<p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
-<p><strong>Fees:</strong> Rs. {{ doctor.fees }}</p>
-<p><strong>Phone:</strong> {{ doctor.phone }}</p>
-<p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
-{% if doctor.a_status %}
-    <p style="color:green;">Available</p>
-    <a href="/appointment/book/{{ doctor.doctor_id }}/">Book Appointment</a>
-{% else %}
-    <p style="color:red;">Not Available</p>
-{% endif %}
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hospitals/doctor_details.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>{{ doctor.name }}</h2>
+
+        <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
+        <p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
+        <p><strong>Fees:</strong> Rs. {{ doctor.fees }}</p>
+        <p><strong>Phone:</strong> {{ doctor.phone }}</p>
+
+        {% if doctor.a_status %}
+            <p class="status available">Available</p>
+            <a href="/appointment/book/{{ doctor.doctor_id }}/" class="btn">Book Appointment</a>
+        {% else %}
+            <p class="status not-available">Not Available</p>
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

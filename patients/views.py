@@ -127,3 +127,4 @@ def register_patients(request):
         return redirect('success')
 
     return render(request, 'patients/patients_form.html')
+

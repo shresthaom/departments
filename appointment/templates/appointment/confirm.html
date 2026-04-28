@@ -1,10 +1,82 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Confirm Appointment</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
+{% block title %}Confirm Appointment{% endblock %}
+
+{% block extra_css %}
+<style>
+    .confirm-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 50px 0;
+    }
+
+    .confirm-card {
+        width: 420px;
+        background: white;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        text-align: center;
+    }
+
+    .confirm-title {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #243b5a;
+    }
+
+    .info {
+        text-align: left;
+        margin-bottom: 15px;
+    }
+
+    .info p {
+        margin: 8px 0;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 20px;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #243b5a;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
+
+    button:hover {
+        background: #1b2f47;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="confirm-wrapper">
+
+    <div class="confirm-card">
+
+        <div class="confirm-title">Confirm Appointment</div>
+
+        <div class="info">
+            <p><b>Doctor:</b> {{ doctor.name }}</p>
+            <p><b>Date:</b> {{ data.appointment_date }}</p>
+            <p><b>Time:</b> {{ data.appointment_time }}</p>
+        </div>
+
+        <form method="POST">
+            {% csrf_token %}
+            <button type="submit">Confirm Booking</button>
+        </form>
+
+    </div>
+
+</div>
 
 {% if messages %}
 <script>
@@ -14,16 +86,4 @@
 </script>
 {% endif %}
 
-<h2>Confirm Appointment</h2>
-
-<p><b>Doctor:</b> {{ doctor.name }}</p>
-<p><b>Date:</b> {{ data.appointment_date }}</p>
-<p><b>Time:</b> {{ data.appointment_time }}</p>
-
-<form method="POST">
-    {% csrf_token %}
-    <button type="submit">Confirm Booking</button>
-</form>
-
-</body>
-</html>
+{% endblock %}

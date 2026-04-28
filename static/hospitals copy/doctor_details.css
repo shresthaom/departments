@@ -1,0 +1,58 @@
+/* CONTAINER */
+.container {
+    max-width: 600px;
+    margin: 50px auto;
+    font-family: Arial, sans-serif;
+}
+
+/* CARD */
+.card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 25px;
+    border-radius: 12px;
+    text-align: center;
+}
+
+/* TITLE */
+h2 {
+    color: #1e3a5f;
+    margin-bottom: 15px;
+}
+
+/* TEXT */
+.card p {
+    margin: 8px 0;
+    color: #334155;
+}
+
+/* STATUS */
+.status {
+    margin: 15px 0;
+    font-weight: bold;
+}
+
+/* AVAILABLE */
+.available {
+    color: #16a34a;
+}
+
+/* NOT AVAILABLE */
+.not-available {
+    color: #dc2626;
+}
+
+/* BUTTON */
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 16px;
+    background: #1e3a5f;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+}
+
+.btn:hover {
+    background: #16324a;
+}

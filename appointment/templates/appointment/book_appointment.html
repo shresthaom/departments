@@ -1,57 +1,147 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Book Appointment</title>
-</head>
+{% extends 'base.html' %}
 
-<body>
+{% block title %}Book Appointment{% endblock %}
 
-<a href="{% url 'doctor_detail' doctor.doctor_id %}">← Back to Doctor</a>
+{% block extra_css %}
+<style>
+    .booking-wrapper {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 40px 0;
+    }
 
-<h2>Book Appointment with {{ doctor.name }}</h2>
+    .booking-container {
+        width: 420px;
+    }
 
-<form method="GET">
-    <label>Select Date:</label><br>
-    <input 
-        type="date" 
-        name="date" 
-        id="appointment_date"
-        value="{{ selected_date }}" 
-        required
-        onchange="this.form.submit()"
-    >
-</form>
+    .booking-title {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+        color: #243b5a;
+    }
 
-<br>
+    .card {
+        background: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
 
-{% if selected_date %}
-<form method="POST">
-    {% csrf_token %}
+    .card h3 {
+        margin: 0;
+        text-align: center;
+    }
 
-    <input type="hidden" name="date" value="{{ selected_date }}">
+    label {
+        display: block;
+        margin-top: 12px;
+        font-weight: bold;
+    }
 
-    <label>Available Time Slots:</label><br>
-    <select name="time" id="time_slot" required>
-        {% for slot in time_slots %}
-            <option value="{{ slot }}">{{ slot }}</option>
-        {% empty %}
-            <option disabled>No slots available</option>
-        {% endfor %}
-    </select>
+    input, select {
+        width: 100%;
+        padding: 10px;
+        margin-top: 6px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+    }
 
-    <br><br>
+    button {
+        width: 100%;
+        margin-top: 18px;
+        padding: 12px;
+        border: none;
+        border-radius: 8px;
+        background: #243b5a;
+        color: white;
+        font-size: 15px;
+        cursor: pointer;
+    }
 
-    <button type="submit">Continue</button>
-</form>
-{% endif %}
+    button:hover {
+        background: #1b2f47;
+    }
 
-<br>
+    .back {
+        display: inline-block;
+        margin-bottom: 15px;
+        text-decoration: none;
+        color: #243b5a;
+    }
 
-{% if messages %}
-    {% for message in messages %}
-        <p style="color:red;">{{ message }}</p>
-    {% endfor %}
-{% endif %}
+    .message {
+        color: red;
+        text-align: center;
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<div class="booking-wrapper">
+
+    <div class="booking-container">
+
+        <a class="back" href="{% url 'doctor_detail' doctor.doctor_id %}">← Back</a>
+
+        <div class="booking-title">Book Appointment</div>
+
+        <!-- Doctor Card -->
+        <div class="card">
+            <h3>{{ doctor.name }}</h3>
+        </div>
+
+        <!-- Date -->
+        <div class="card">
+            <form method="GET">
+                <label>Select Date:</label>
+                <input 
+                    type="date" 
+                    name="date" 
+                    id="appointment_date"
+                    value="{{ selected_date }}" 
+                    required
+                    onchange="this.form.submit()"
+                >
+            </form>
+        </div>
+
+        {% if selected_date %}
+        <!-- Time -->
+        <div class="card">
+            <form method="POST">
+                {% csrf_token %}
+
+                <input type="hidden" name="date" value="{{ selected_date }}">
+
+                <label>Available Time Slots:</label>
+                <select name="time" required>
+                    {% for slot in time_slots %}
+                        <option value="{{ slot }}">{{ slot }}</option>
+                    {% empty %}
+                        <option disabled>No slots available</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Continue</button>
+            </form>
+        </div>
+        {% endif %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="message">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+
+</div>
 
 <script>
     const dateInput = document.getElementById("appointment_date");
@@ -78,5 +168,4 @@
     });
 </script>
 
-</body>
-</html>
+{% endblock %}

@@ -1,132 +1,84 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ hospital.name }}</title>
+{% extends 'base.html' %}
+{% load static %}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial;
-        }
+{% block title %}{{ hospital.name }}{% endblock %}
 
-        .grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin: 20px;
-        }
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hospitals/hospital_detail.css' %}">
+{% endblock %}
 
-        .doctor-card {
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 10px;
-            background: #fff;
-            transition: 0.2s;
-        }
+{% block content %}
 
-        .doctor-card:hover {
-            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
-        }
+<div class="container">
 
-        .ranking-note {
-            margin-left: 20px;
-            color: #2c3e50;
-            font-weight: 600;
-        }
-    </style>
-</head>
-
-<body>
-
-<!-- NAVBAR -->
-<div style="background:#2c3e50; padding:12px; color:white; display:flex; justify-content:space-between;">
-    <div>
-        <a href="{% url 'home' %}" style="color:white; margin-right:15px;">Home</a>
-        <a href="#" style="color:white;">About</a>
+    <!-- HOSPITAL INFO -->
+    <div class="hospital-header">
+        <h2>{{ hospital.name }}</h2>
+        <p>{{ hospital.address }}</p>
     </div>
 
-    <div>
-        {% if user.is_authenticated %}
-            Hello, {{ user.username }}
-        {% endif %}
+    <!-- SEARCH + FILTER -->
+    <div class="filter-card">
+        <form method="GET" class="filter-form">
+
+            <input type="text" name="search"
+                   placeholder="Search doctor"
+                   value="{{ search }}">
+
+            <select name="department">
+                <option value="">All Departments</option>
+
+                {% for dept in departments %}
+                    <option value="{{ dept.id }}"
+                        {% if dept.id|stringformat:"s" == dept_id %}selected{% endif %}>
+                        {{ dept.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn">Apply</button>
+
+        </form>
     </div>
-</div>
 
-<!-- HOSPITAL INFO -->
-<div style="margin:20px;">
-    <h2>{{ hospital.name }}</h2>
-    <p>{{ hospital.address }}</p>
-</div>
+    <!-- DOCTORS -->
+    <h3 class="section-title">Doctors</h3>
 
-<hr>
+    {% if dept_id %}
+        <p class="ranking-note">
+            Showing ranked doctors based on experience, qualification, and availability.
+        </p>
+    {% endif %}
 
-<!-- SEARCH + FILTER -->
-<div style="margin:20px;">
-<form method="GET">
+    <div class="doctor-grid">
 
-    <input type="text" name="search"
-           placeholder="Search doctor"
-           value="{{ search }}">
+        {% for doctor in doctors %}
+            <div class="doctor-card">
 
-    <button type="submit">Search</button>
+                <a href="{% url 'doctor_detail' doctor.doctor_id %}" class="doctor-name">
+                    {{ doctor.name }}
+                </a>
 
-    <br><br>
+                {% if dept_id %}
+                    {% if forloop.counter == 1 %}
+                        <p class="top-doctor">⭐ Top Doctor</p>
+                    {% endif %}
 
-    <select name="department">
-        <option value="">All Departments</option>
+                    <p class="rank">Rank: #{{ forloop.counter }}</p>
+                {% endif %}
 
-        {% for dept in departments %}
-            <option value="{{ dept.id }}"
-                {% if dept.id|stringformat:"s" == dept_id %}selected{% endif %}>
-                {{ dept.name }}
-            </option>
+                <p><b>Department:</b> {{ doctor.department.name }}</p>
+                <p><b>Experience:</b> {{ doctor.experience_years }} yrs</p>
+                <p><b>Qualification:</b> {{ doctor.qualification }}</p>
+
+            </div>
+
+        {% empty %}
+            <p class="empty">No doctors found</p>
         {% endfor %}
-    </select>
-
-    <button type="submit">Filter</button>
-
-</form>
-</div>
-
-<hr>
-
-<!-- DOCTORS -->
-<h2 style="margin-left:20px;">Doctors</h2>
-
-<!-- ✅ SHOW ONLY WHEN RANKING ACTIVE -->
-{% if dept_id %}
-    <p class="ranking-note">
-        Showing ranked doctors based on experience, qualification, and availability.
-    </p>
-{% endif %}
-
-<div class="grid">
-{% for doctor in doctors %}
-    <div class="doctor-card">
-
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
-            <b>{{ doctor.name }}</b>
-        </a>
-
-        <!-- ✅ ONLY SHOW WHEN RANKING -->
-        {% if dept_id %}
-            {% if forloop.counter == 1 %}
-                <p style="color:green;">⭐ Top Doctor</p>
-            {% endif %}
-
-            <p><b>Rank:</b> #{{ forloop.counter }}</p>
-        {% endif %}
-
-        <p><b>Department:</b> {{ doctor.department.name }}</p>
-        <p><b>Experience:</b> {{ doctor.experience_years }} yrs</p>
-        <p><b>Qualification:</b> {{ doctor.qualification }}</p>
 
     </div>
 
-{% empty %}
-    <p style="margin:20px;">No doctors found</p>
-{% endfor %}
 </div>
 
-</body>
-</html>
+{% endblock %}

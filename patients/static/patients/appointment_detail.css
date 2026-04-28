@@ -1,0 +1,70 @@
+/* CONTAINER */
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+
+/* BACK LINK */
+.back-link {
+    text-decoration: none;
+    color: #1e3a5f;
+    font-weight: 600;
+}
+
+/* CARD */
+.card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 25px;
+    border-radius: 12px;
+    margin-top: 15px;
+}
+
+/* TITLE */
+h2 {
+    color: #1e3a5f;
+    margin-bottom: 15px;
+}
+
+/* TEXT */
+.card p {
+    margin: 8px 0;
+    color: #334155;
+}
+
+/* STATUS COLORS */
+.status {
+    font-weight: bold;
+}
+
+.status.upcoming {
+    color: #1e3a5f;
+}
+
+.status.completed {
+    color: #16a34a;
+}
+
+.status.cancelled {
+    color: #dc2626;
+}
+
+/* BUTTON */
+.btn {
+    margin-top: 20px;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+}
+
+/* DANGER BUTTON */
+.btn.danger {
+    background: #dc2626;
+}
+
+.btn.danger:hover {
+    background: #b91c1c;
+}
