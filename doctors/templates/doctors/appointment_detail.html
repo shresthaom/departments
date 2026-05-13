@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Appointment Detail</title>
+</head>
+<body>
+
+<h2>Appointment Detail</h2>
+
+<p>Patient:
+    <a href="{% url 'patient_detail' appointment.patient.id %}">
+        {{ appointment.patient.username }}
+    </a>
+</p>
+
+<p>Date: {{ appointment.appointment_date }}</p>
+<p>Time: {{ appointment.appointment_time }}</p>
+<p>Status: {{ appointment.status }}</p>
+
+</body>
+</html>

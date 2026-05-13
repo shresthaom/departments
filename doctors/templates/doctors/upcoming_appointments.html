@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upcoming Appointments</title>
+</head>
+<body>
+
+<h2>Upcoming Appointments</h2>
+
+{% for appt in appointments %}
+    <div style="border:1px solid gray; padding:10px; margin:10px;">
+
+        <p>
+            <strong>{{ appt.patient.username }}</strong>
+            - {{ appt.appointment_date }} {{ appt.appointment_time }}
+        </p>
+
+        <a href="{% url 'doctor_appointment_detail' appt.appointment_id %}">View</a> |
+
+        <a href="{% url 'doctor_reschedule' appt.appointment_id %}">Reschedule</a>
+
+    </div>
+
+{% empty %}
+    <p>No upcoming appointments</p>
+{% endfor %}
+
+</body>
+</html>

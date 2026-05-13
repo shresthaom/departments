@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Patient Details</title>
+</head>
+<body>
+
+<h2>Patient Profile</h2>
+
+<p>Username: {{ patient_user.username }}</p>
+
+{% if patient_profile %}
+
+    <p>Name: {{ patient_profile.name }}</p>
+    <p>Address: {{ patient_profile.address }}</p>
+    <p>Phone: {{ patient_profile.phone }}</p>
+    <p>DOB: {{ patient_profile.dob }}</p>
+    <p>Gender: {{ patient_profile.gender }}</p>
+
+{% endif %}
+
+<hr>
+
+<h3>Past Appointments</h3>
+
+{% for appt in past_appts %}
+    <p>{{ appt.appointment_date }} - {{ appt.status }}</p>
+{% empty %}
+    <p>No past appointments</p>
+{% endfor %}
+
+</body>
+</html>

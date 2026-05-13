@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Availability</title>
+</head>
+<body>
+
+<h2>Confirm Your Availability</h2>
+
+<p>Day: {{ data.day }}</p>
+<p>Start Time: {{ data.start_time }}</p>
+<p>End Time: {{ data.end_time }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm & Save</button>
+</form>
+
+</body>
+</html>

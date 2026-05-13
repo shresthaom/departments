@@ -75,19 +75,25 @@
     <!-- RIGHT SIDE -->
     <div class="nav-right">
 
-        {% if user.is_authenticated %}
-            <span>Hello, {{ user.username }}</span>
+    {% if user.is_authenticated %}
+        <span>Hello, {{ user.username }}</span>
 
-            <a href="{% url 'logout' %}" class="logout-btn">
-                Logout
-            </a>
-        {% else %}
-            <a href="{% url 'login' %}" style="color:white; text-decoration:none;">
-                Login
+        {% if user.doctor %}
+            <a href="{% url 'doctor_dashboard' %}" style="color:white; text-decoration:none;">
+                Dashboard
             </a>
         {% endif %}
 
-    </div>
+        <a href="{% url 'logout' %}" class="logout-btn">
+            Logout
+        </a>
+    {% else %}
+        <a href="{% url 'login' %}" style="color:white; text-decoration:none;">
+            Login
+        </a>
+    {% endif %}
+
+</div>
 
 </div>
 

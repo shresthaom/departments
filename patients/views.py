@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 
-# User Initial Registration
+# user registration
 def register(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -22,7 +22,7 @@ def register(request):
     return render(request, 'patients/register.html')
 
 
-# Login
+# login with role-based redirect
 def user_login(request):
     if request.method == "POST":
         username = request.POST['username']
@@ -32,24 +32,29 @@ def user_login(request):
 
         if user is not None:
             login(request, user)
+
+            # role check
+            if hasattr(user, 'doctor'):
+                return redirect('doctor_dashboard')
+
             return redirect('patient_dashboard')
 
     return render(request, 'patients/login.html')
 
 
-# Logout
+# logout
 def user_logout(request):
     logout(request)
     return redirect('login')
 
 
-# Patient Dashboard
+# patient dashboard
 @login_required
 def patient_dashboard(request):
     try:
         patient = Patients.objects.get(user=request.user)
     except Patients.DoesNotExist:
-        return redirect('register_patient_details')
+        return redirect('register_patients')
 
     appointments = Appointment.objects.filter(
         patient=request.user
@@ -70,7 +75,7 @@ def patient_dashboard(request):
     return render(request, 'patients/patient_dashboard.html', context)
 
 
-# Appointment Detail
+# appointment detail
 @login_required
 def appointment_detail(request, appointment_id):
     appointment = get_object_or_404(
@@ -84,7 +89,7 @@ def appointment_detail(request, appointment_id):
     })
 
 
-# Cancel Appointment
+# cancel appointment
 @login_required
 def cancel_appointment(request, appointment_id):
     appointment = get_object_or_404(
@@ -95,17 +100,18 @@ def cancel_appointment(request, appointment_id):
 
     if request.method == "POST":
         appointment.delete()
-        messages.success(request, "Appointment cancelled successfully.")
+        messages.success(request, "appointment cancelled successfully.")
         return redirect('patient_dashboard')
 
     return redirect('patient_dashboard')
 
-# Success
+
+# success page
 def success(request):
     return render(request, 'patients/success.html')
 
 
-# Additional Patient Details after login/registration 
+# extra patient details
 @login_required
 def register_patients(request):
     if request.method == "POST":

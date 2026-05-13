@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Delete</title>
+
+    <style>
+        body {
+            font-family: Arial;
+            background: #f4f6f8;
+            padding: 20px;
+        }
+
+        .box {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 400px;
+        }
+
+        .danger {
+            color: red;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 10px 15px;
+            background: red;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        a {
+            margin-left: 10px;
+            text-decoration: none;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Confirm Delete</h2>
+
+<div class="box">
+
+    <p class="danger">
+        Are you sure you want to delete this leave?
+    </p>
+
+    <p>
+        <b>{{ leave.start_date }} → {{ leave.end_date }}</b><br>
+        {{ leave.reason }}
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+        <button type="submit">Yes, Delete</button>
+        <a href="{% url 'doctor_dashboard' %}">Cancel</a>
+    </form>
+
+</div>
+
+</body>
+</html>

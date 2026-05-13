@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctor Analytics</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<h2>Appointment Analytics</h2>
+
+<canvas id="appointmentChart"></canvas>
+
+<script>
+    const ctx = document.getElementById('appointmentChart');
+
+    const data = {
+        labels: {{ labels|safe }},
+        datasets: [{
+            label: 'Appointments',
+            data: {{ values|safe }},
+        }]
+    };
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: data
+    });
+</script>
+
+</body>
+</html>

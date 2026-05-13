@@ -1,0 +1,42 @@
+<h2>Add Leave</h2>
+
+{% if error %}
+<p style="color:red;">{{ error }}</p>
+{% endif %}
+
+<form method="POST">
+    {% csrf_token %}
+
+    <label>Start Date</label>
+    <input type="date" name="start_date" id="start_date" required>
+
+    <br><br>
+
+    <label>End Date</label>
+    <input type="date" name="end_date" id="end_date" required>
+
+    <br><br>
+
+    <label>Reason</label>
+    <textarea name="reason"></textarea>
+
+    <br><br>
+
+    <button type="submit">Submit Leave</button>
+</form>
+
+<script>
+    // lock past dates in calendar
+    const today = new Date().toISOString().split('T')[0];
+
+    const start = document.getElementById("start_date");
+    const end = document.getElementById("end_date");
+
+    start.setAttribute("min", today);
+    end.setAttribute("min", today);
+
+    // dynamically adjust end date based on start date
+    start.addEventListener("change", function () {
+        end.setAttribute("min", this.value);
+    });
+</script>

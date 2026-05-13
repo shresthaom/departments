@@ -8,7 +8,7 @@
 
 <h2>Your Appointments</h2>
 
-<!-- UPCOMING -->
+<!-- upcoming -->
 <h3>Upcoming</h3>
 
 {% for appt in upcoming %}
@@ -18,7 +18,8 @@
         <p><b>Date:</b> {{ appt.appointment_date }}</p>
         <p><b>Time:</b> {{ appt.appointment_time }}</p>
 
-        <a href="{% url 'reschedule_appointment' appt.appointment_id %}">
+        <!-- fixed url name -->
+        <a href="{% url 'doctor_reschedule' appt.appointment_id %}">
             Reschedule
         </a>
 
@@ -28,7 +29,7 @@
 {% endfor %}
 
 
-<!-- PAST -->
+<!-- past -->
 <h3>Past Appointments</h3>
 
 {% for appt in past %}
@@ -39,13 +40,17 @@
         <p><b>Time:</b> {{ appt.appointment_time }}</p>
 
         {% if appt.status != "completed" %}
-            <a href="{% url 'mark_completed' appt.appointment_id %}" style="color:green;">
+
+            <!-- fixed url name -->
+            <a href="{% url 'doctor_mark_completed' appt.appointment_id %}" style="color:green;">
                 Mark as Completed
             </a>
 
-            <a href="{% url 'reschedule_appointment' appt.appointment_id %}" style="color:orange; margin-left:10px;">
+            <!-- fixed url name -->
+            <a href="{% url 'doctor_reschedule' appt.appointment_id %}" style="color:orange; margin-left:10px;">
                 Reschedule
             </a>
+
         {% else %}
             <p style="color:green;">✔ Completed</p>
         {% endif %}
