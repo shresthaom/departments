@@ -33,10 +33,15 @@ def user_login(request):
         if user is not None:
             login(request, user)
 
-            # role check
+            # admin check (must come first)
+            if user.is_superuser or user.is_staff:
+                return redirect('admin_dashboard')
+
+            # doctor check
             if hasattr(user, 'doctor'):
                 return redirect('doctor_dashboard')
 
+            # default patient
             return redirect('patient_dashboard')
 
     return render(request, 'patients/login.html')
@@ -51,10 +56,10 @@ def user_logout(request):
 # patient dashboard
 @login_required
 def patient_dashboard(request):
-    try:
-        patient = Patients.objects.get(user=request.user)
-    except Patients.DoesNotExist:
-        return redirect('register_patients')
+    patient = Patients.objects.filter(user=request.user).first()
+
+    if not patient:
+        return redirect('register_patient_details')
 
     appointments = Appointment.objects.filter(
         patient=request.user
@@ -65,14 +70,12 @@ def patient_dashboard(request):
     upcoming = appointments.filter(appointment_date__gte=today)
     past = appointments.filter(appointment_date__lt=today)
 
-    context = {
+    return render(request, 'patients/patient_dashboard.html', {
         'patient': patient,
         'upcoming': upcoming,
         'past': past,
         'upcoming_count': upcoming.count()
-    }
-
-    return render(request, 'patients/patient_dashboard.html', context)
+    })
 
 
 # appointment detail

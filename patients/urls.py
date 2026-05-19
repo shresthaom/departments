@@ -12,5 +12,6 @@ urlpatterns = [
     path('cancel/<int:appointment_id>/', views.cancel_appointment, name='cancel_appointment'),
 
     path('register-details/', views.register_patients, name='register_patient_details'),
+
     path('success/', views.success, name='success'),
 ]

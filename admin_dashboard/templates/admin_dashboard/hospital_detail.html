@@ -1,0 +1,9 @@
+<h2>{{ hospital.name }}</h2>
+
+<p>{{ hospital.address }}</p>
+
+<h3>Departments</h3>
+
+{% for dept in departments %}
+    <p>{{ dept.name }}</p>
+{% endfor %}

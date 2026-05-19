@@ -9,4 +9,9 @@ urlpatterns = [
     path("doctor/complete/<int:appointment_id>/", views.doctor_mark_completed, name="doctor_mark_completed"),
     path("doctor/missed/<int:appointment_id>/", views.doctor_mark_missed, name="doctor_mark_missed"),
     path("doctor/reschedule/<int:appointment_id>/", views.doctor_reschedule, name="doctor_reschedule"),
+    path(
+    "cancel/<int:appointment_id>/",
+    views.cancel_appointment,
+    name="cancel_appointment"
+),
 ]

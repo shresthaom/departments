@@ -1,0 +1,31 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}
+Hospitals
+{% endblock %}
+
+{% block page_title %}
+Hospitals
+{% endblock %}
+
+{% block content %}
+
+<table>
+
+    <tr>
+        <th>Hospital Name</th>
+    </tr>
+
+    {% for hospital in hospitals %}
+<tr>
+    <td>
+        <a href="{% url 'hospital_detail' hospital.hospital_id %}">
+            {{ hospital.name }}
+        </a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+{% endblock %}

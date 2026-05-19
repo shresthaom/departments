@@ -1,0 +1,10 @@
+<h2>Patient Profile</h2>
+
+<p>Name: {{ patient.username }}</p>
+<p>Email: {{ patient.email }}</p>
+
+<h3>Appointments</h3>
+
+{% for appt in appointments %}
+    <p>{{ appt.appointment_date }} - {{ appt.doctor }}</p>
+{% endfor %}

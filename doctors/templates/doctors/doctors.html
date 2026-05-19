@@ -1,48 +1,125 @@
-<a href="{% url 'hospital_list' %}">🏥 Hospitals</a>
-<a href="{% url 'patient_dashboard' %}">📊 Dashboard</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Doctors</title>
 
-<h2>Doctors</h2>
+    <style>
+        .doctor-card {
+            border: 1px solid #ddd;
+            padding: 16px;
+            margin-bottom: 16px;
+            border-radius: 10px;
+            background: #fff;
+        }
 
-<div style="margin-bottom: 15px;">
+        .rank-1 {
+            border-left: 6px solid gold;
+            background: #fffdf2;
+        }
 
-    <a href="{% url 'doctor_list' %}"
-       style="padding:6px 10px; background:black; color:white; text-decoration:none;">
-        All Doctors
-    </a>
+        .rank-2 {
+            border-left: 6px solid silver;
+            background: #f8f8f8;
+        }
 
-    <a href="{% url 'doctor_list' %}?available=true"
-       style="padding:6px 10px; background:green; color:white; text-decoration:none; margin-left:5px;">
-        Available Doctors
-    </a>
+        .rank-3 {
+            border-left: 6px solid #cd7f32;
+            background: #fff7f0;
+        }
 
-</div>
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: white;
+            margin-bottom: 8px;
+        }
 
-<div style="display:flex; flex-wrap:wrap; gap:10px;">
+        .gold { background: gold; color: black; }
+        .silver { background: silver; color: black; }
+        .bronze { background: #cd7f32; }
+        .normal { background: #444; }
 
-    {% for doctor in doctors %}
+        .score-box {
+            margin-top: 8px;
+            font-weight: bold;
+        }
 
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}" style="text-decoration:none; color:black;">
+        ul {
+            margin-top: 8px;
+        }
+    </style>
 
-            <div style="border:1px solid #ccc; padding:10px; width:200px;">
+</head>
 
-                <h3>{{ doctor.name }}</h3>
+<body>
 
-                <p>{{ doctor.specialization }}</p>
+<h2>Ranked Doctors</h2>
 
-                <p>{{ doctor.qualification }}</p>
+{% for item in ranked_doctors %}
 
-                {% if doctor.a_status %}
-                    <p style="color:green;">Available</p>
-                {% else %}
-                    <p style="color:red;">Not Available</p>
-                {% endif %}
+    <div class="doctor-card
+        {% if item.rank == 1 %}rank-1{% elif item.rank == 2 %}rank-2{% elif item.rank == 3 %}rank-3{% endif %}
+    ">
 
-            </div>
+        <!-- RANK BADGE -->
+        {% if item.rank == 1 %}
+            <span class="badge gold">🥇 Top Ranked</span>
+        {% elif item.rank == 2 %}
+            <span class="badge silver">🥈 Second</span>
+        {% elif item.rank == 3 %}
+            <span class="badge bronze">🥉 Third</span>
+        {% else %}
+            <span class="badge normal">Rank #{{ item.rank }}</span>
+        {% endif %}
 
+        <!-- DOCTOR INFO -->
+        <h3>{{ item.doctor.name }}</h3>
+
+        <p><b>Specialization:</b> {{ item.doctor.specialization }}</p>
+        <p><b>Qualification:</b> {{ item.doctor.qualification }}</p>
+        <p><b>Experience:</b> {{ item.doctor.experience_years }} years</p>
+
+        {% if item.doctor.a_status %}
+            <p style="color:green;"><b>Available</b></p>
+        {% else %}
+            <p style="color:red;"><b>Not Available</b></p>
+        {% endif %}
+
+        <!-- SCORE -->
+        <div class="score-box">
+            ⭐ Score: {{ item.score }}
+        </div>
+
+        <!-- BREAKDOWN -->
+        <div>
+            <b>Ranking Breakdown:</b>
+            <ul>
+                {% for b in item.breakdown %}
+                    <li>
+                        {% if b|length == 3 %}
+                            {{ b.0 }} ({{ b.2 }}): +{{ b.1 }}
+                        {% else %}
+                            {{ b.0 }}: +{{ b.1 }}
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- ACTION -->
+        <a href="{% url 'doctor_detail' item.doctor.doctor_id %}">
+            View Profile
         </a>
 
-    {% empty %}
-        <p>No doctors found.</p>
-    {% endfor %}
+    </div>
 
-</div>
+{% empty %}
+
+    <p>No doctors found.</p>
+
+{% endfor %}
+
+</body>
+</html>

@@ -1,0 +1,38 @@
+{% extends 'admin/base.html' %}
+
+{% block title %}
+Appointments
+{% endblock %}
+
+{% block page_title %}
+Appointments
+{% endblock %}
+
+{% block content %}
+
+<table>
+
+    <tr>
+        <th>Patient</th>
+        <th>Doctor</th>
+        <th>Date</th>
+        <th>Status</th>
+    </tr>
+
+    {% for appointment in appointments %}
+    <tr>
+
+        <td>{{ appointment.patient }}</td>
+
+        <td>{{ appointment.doctor }}</td>
+
+        <td>{{ appointment.appointment_date }}</td>
+
+        <td>{{ appointment.status }}</td>
+
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}

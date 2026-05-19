@@ -390,3 +390,22 @@ def doctor_reschedule(request, appointment_id):
             "selected_date": selected_date
         }
     )
+
+@login_required
+def cancel_appointment(request, appointment_id):
+
+    appointment = get_object_or_404(
+        Appointment,
+        appointment_id=appointment_id,
+        patient=request.user
+    )
+
+    appointment.status = "cancelled"
+    appointment.save()
+
+    messages.success(
+        request,
+        "appointment cancelled"
+    )
+
+    return redirect("upcoming_appointments")

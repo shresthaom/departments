@@ -7,18 +7,81 @@ from .models import Doctor, DoctorAvailability, DoctorLeave
 from .forms import DoctorLeaveForm
 from appointment.models import Appointment
 
+def calculate_score_with_breakdown(doctor):
+
+    score = 0
+    breakdown = []
+
+    # availability
+    if doctor.a_status:
+        score += 40
+        breakdown.append(("Availability", 40))
+
+    # experience
+    exp_score = doctor.experience_years * 2
+    score += exp_score
+    breakdown.append(("Experience", exp_score))
+
+    # qualification
+    qualification_scores = {
+        "MBBS": 10,
+        "MD": 20,
+        "MS": 20,
+        "BDS": 10,
+        "MDS": 18,
+        "DM": 25,
+        "MCh": 25,
+        "FCPS": 22,
+        "PhD": 15,
+    }
+
+    for q, points in qualification_scores.items():
+        if q in doctor.qualification:
+            score += points
+            breakdown.append(("Qualification", points, q))
+            break
+
+    return score, breakdown
+
 
 # doctor list
 def doctor_list(request):
+
+    hospital_id = request.GET.get("hospital")
+    department_id = request.GET.get("department")
+    available = request.GET.get("available")
+
     doctors = Doctor.objects.all()
 
-    if request.GET.get('available') == 'true':
+    if hospital_id:
+        doctors = doctors.filter(hospital_id=hospital_id)
+
+    if department_id:
+        doctors = doctors.filter(department_id=department_id)
+
+    if available == "true":
         doctors = doctors.filter(a_status=True)
 
-    return render(request, 'doctors/doctors.html', {
-        'doctors': doctors
-    })
+    ranked = []
 
+    for doctor in doctors:
+        score, breakdown = calculate_score_with_breakdown(doctor)
+
+        ranked.append({
+            "doctor": doctor,
+            "score": score,
+            "breakdown": breakdown
+        })
+
+    ranked.sort(key=lambda x: x["score"], reverse=True)
+
+    # assign rank number
+    for i, item in enumerate(ranked, start=1):
+        item["rank"] = i
+
+    return render(request, "doctors/doctors.html", {
+        "ranked_doctors": ranked
+    })
 
 # doctor detail
 def doctor_detail(request, doctor_id):

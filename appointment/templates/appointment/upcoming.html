@@ -18,12 +18,27 @@
         <p><b>Date:</b> {{ appt.appointment_date }}</p>
         <p><b>Time:</b> {{ appt.appointment_time }}</p>
 
-        <!-- fixed url name -->
+        <!-- show status -->
+        <p>
+            <b>Status:</b>
+            {{ appt.status|title }}
+        </p>
+
+        <!-- cancel option -->
+        {% if appt.status != "cancelled" %}
+            <a href="{% url 'cancel_appointment' appt.appointment_id %}"
+               style="color:red; margin-right:10px;">
+                Cancel Appointment
+            </a>
+        {% endif %}
+
+        <!-- reschedule -->
         <a href="{% url 'doctor_reschedule' appt.appointment_id %}">
             Reschedule
         </a>
 
     </div>
+
 {% empty %}
     <p>No upcoming appointments.</p>
 {% endfor %}
@@ -39,23 +54,42 @@
         <p><b>Date:</b> {{ appt.appointment_date }}</p>
         <p><b>Time:</b> {{ appt.appointment_time }}</p>
 
-        {% if appt.status != "completed" %}
+        <!-- always show status -->
+        <p>
+            <b>Status:</b>
+            {{ appt.status|title }}
+        </p>
 
-            <!-- fixed url name -->
-            <a href="{% url 'doctor_mark_completed' appt.appointment_id %}" style="color:green;">
+        {% if appt.status == "completed" %}
+
+            <p style="color:green;">✔ Completed</p>
+
+        {% elif appt.status == "cancelled" %}
+
+            <p style="color:red;">✖ Cancelled</p>
+
+        {% elif appt.status == "missed" %}
+
+            <p style="color:orange;">⚠ Missed</p>
+
+        {% else %}
+
+            <!-- mark completed -->
+            <a href="{% url 'doctor_mark_completed' appt.appointment_id %}"
+               style="color:green;">
                 Mark as Completed
             </a>
 
-            <!-- fixed url name -->
-            <a href="{% url 'doctor_reschedule' appt.appointment_id %}" style="color:orange; margin-left:10px;">
+            <!-- reschedule -->
+            <a href="{% url 'doctor_reschedule' appt.appointment_id %}"
+               style="color:orange; margin-left:10px;">
                 Reschedule
             </a>
 
-        {% else %}
-            <p style="color:green;">✔ Completed</p>
         {% endif %}
 
     </div>
+
 {% empty %}
     <p>No past appointments.</p>
 {% endfor %}

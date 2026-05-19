@@ -1,0 +1,9 @@
+<h2>Doctor Details</h2>
+
+<p>Name: {{ doctor.name }}</p>
+<p>Specialization: {{ doctor.specialization }}</p>
+<p>Status: {{ doctor.a_status }}</p>
+
+<a href="{% url 'toggle_doctor' doctor.doctor_id %}">
+    Toggle Status
+</a>

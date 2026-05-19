@@ -1,0 +1,32 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block content %}
+
+<h2>Doctors List</h2>
+
+<table border="1" cellpadding="10">
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Specialization</th>
+        <th>Status</th>
+    </tr>
+
+    {% for doctor in doctors %}
+    <tr>
+        <td>{{ doctor.doctor_id }}</td>
+        <td>{{ doctor.name }}</td>
+        <td>{{ doctor.specialization }}</td>
+        <td>
+            {% if doctor.a_status %}
+                Active
+            {% else %}
+                Inactive
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+{% endblock %}
