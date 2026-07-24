@@ -1,0 +1,47 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Doctor System{% endblock %}</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- BASE CSS -->
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+
+    <div class="nav-left">
+        <a href="{% url 'home' %}">Home</a>
+        <a href="{% url 'hospital_list' %}">Hospitals</a>
+        <a href="{% url 'doctor_list' %}">Doctors</a>
+        <a href="#">About</a>
+    </div>
+
+    <div class="nav-right">
+        {% if user.is_authenticated %}
+            <a href="{% url 'patient_dashboard' %}">Dashboard</a>
+            <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+    </div>
+
+</div>
+
+{% block content %}{% endblock %}
+
+<!-- FOOTER -->
+<div class="footer">
+    © 2026 Doctor Appointment System
+</div>
+
+</body>
+</html>

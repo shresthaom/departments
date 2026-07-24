@@ -1,0 +1,139 @@
+/* CONTAINER */
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    font-family: Arial, sans-serif;
+}
+
+/* BACK LINK */
+.back-link {
+    text-decoration: none;
+    color: #1e3a5f;
+    font-weight: bold;
+}
+
+/* TITLE */
+h2 {
+    margin: 20px 0;
+    color: #1e3a5f;
+}
+
+/* CARD */
+.card {
+    background: #f8fafc;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #e2e8f0;
+}
+
+/* LABEL */
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* INPUT + SELECT */
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+/* BUTTON */
+.btn {
+    background: #1e3a5f;
+    color: white;
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background: #16324a;
+}
+
+/* ERROR */
+.error {
+    color: red;
+    margin-top: 10px;
+}
+
+/* PAGE LAYOUT */
+body {
+    font-family: Arial, sans-serif;
+}
+
+/* CONTAINER */
+form {
+    max-width: 500px;
+    margin: 40px auto;
+    background: #f8fafc;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+}
+
+/* HEADINGS */
+h2 {
+    text-align: center;
+    color: #1e3a5f;
+    margin-top: 30px;
+}
+
+h3 {
+    text-align: center;
+    color: #334155;
+    margin-bottom: 20px;
+}
+
+/* LABELS */
+label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+/* INPUTS */
+input, select, textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+}
+
+/* TEXTAREA */
+textarea {
+    resize: none;
+    height: 80px;
+}
+
+/* BUTTON */
+button {
+    margin-top: 20px;
+    width: 100%;
+    background: #1e3a5f;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #16324a;
+}
+
+/* OPTIONAL: center spacing */
+form + script {
+    display: none;
+}

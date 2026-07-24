@@ -1,23 +1,49 @@
-<a href="{% url 'home' %}">← Back to Home</a>
-<h2>Hospitals</h2>
+{% extends 'base.html' %}
+{% load static %}
 
-<form method="GET">
-    <input type="text" name="q" placeholder="Search hospitals..." value="{{ query }}">
-    <button type="submit">Search</button>
-</form>
+{% block title %}Hospitals{% endblock %}
 
-<br>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hospitals/hospital_list.css' %}">
+{% endblock %}
 
-{% for hospital in hospitals %}
-    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-        <a href="{% url 'hospital_detail' hospital.hospital_id %}">
-            <h3>{{ hospital.name }}</h3>
-        </a>
+{% block content %}
 
-        <p>{{ hospital.address }}</p>
+<div class="container">
 
-        <a href="{% url 'hospital_detail' hospital.hospital_id %}">
-            View Doctors →
-        </a>
+    <a href="{% url 'home' %}" class="back-link">← Back to Home</a>
+
+    <h2 class="page-title">Hospitals</h2>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+        <form method="GET">
+            <input type="text" name="q" placeholder="Search hospitals..." value="{{ query }}">
+            <button type="submit" class="btn">Search</button>
+        </form>
     </div>
-{% endfor %}
+
+    <!-- LIST -->
+    <div class="hospital-grid">
+
+        {% for hospital in hospitals %}
+            <div class="hospital-card">
+
+                <h3>{{ hospital.name }}</h3>
+                <p>{{ hospital.address }}</p>
+
+                <a href="{% url 'hospital_detail' hospital.hospital_id %}" class="btn">
+                    View Doctors →
+                </a>
+
+            </div>
+
+        {% empty %}
+            <p class="empty">No hospitals found</p>
+        {% endfor %}
+
+    </div>
+
+</div>
+
+{% endblock %}

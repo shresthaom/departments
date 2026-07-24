@@ -1,53 +1,84 @@
-<a href="{% url 'hospital_list' %}">← Back to Hospitals</a>
+{% extends 'base.html' %}
+{% load static %}
 
-<h2>{{ hospital.name }}</h2>
-<p>{{ hospital.address }}</p>
+{% block title %}{{ hospital.name }}{% endblock %}
 
-<hr>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'hospitals/hospital_detail.css' %}">
+{% endblock %}
 
-<!-- 🔍 SEARCH + FILTER (COMBINED FORM) -->
-<form method="GET">
+{% block content %}
 
-    <!-- SEARCH -->
-    <input type="text" name="search"
-           placeholder="Search doctor name or specialization"
-           value="{{ search }}">
+<div class="container">
 
-    <button type="submit">Search</button>
+    <!-- HOSPITAL INFO -->
+    <div class="hospital-header">
+        <h2>{{ hospital.name }}</h2>
+        <p>{{ hospital.address }}</p>
+    </div>
 
-    <br><br>
+    <!-- SEARCH + FILTER -->
+    <div class="filter-card">
+        <form method="GET" class="filter-form">
 
-    <!-- FILTER -->
-    <select name="department">
-        <option value="">All Departments</option>
+            <input type="text" name="search"
+                   placeholder="Search doctor"
+                   value="{{ search }}">
 
-        {% for dept in departments %}
-            <option value="{{ dept.id }}"
-                {% if dept.id|stringformat:"s" == dept_id %}selected{% endif %}>
-                {{ dept.name }}
-            </option>
+            <select name="department">
+                <option value="">All Departments</option>
+
+                {% for dept in departments %}
+                    <option value="{{ dept.id }}"
+                        {% if dept.id|stringformat:"s" == dept_id %}selected{% endif %}>
+                        {{ dept.name }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit" class="btn">Apply</button>
+
+        </form>
+    </div>
+
+    <!-- DOCTORS -->
+    <h3 class="section-title">Doctors</h3>
+
+    {% if dept_id %}
+        <p class="ranking-note">
+            Showing ranked doctors based on experience, qualification, and availability.
+        </p>
+    {% endif %}
+
+    <div class="doctor-grid">
+
+        {% for doctor in doctors %}
+            <div class="doctor-card">
+
+                <a href="{% url 'doctor_detail' doctor.doctor_id %}" class="doctor-name">
+                    {{ doctor.name }}
+                </a>
+
+                {% if dept_id %}
+                    {% if forloop.counter == 1 %}
+                        <p class="top-doctor">⭐ Top Doctor</p>
+                    {% endif %}
+
+                    <p class="rank">Rank: #{{ forloop.counter }}</p>
+                {% endif %}
+
+                <p><b>Department:</b> {{ doctor.department.name }}</p>
+                <p><b>Experience:</b> {{ doctor.experience_years }} yrs</p>
+                <p><b>Qualification:</b> {{ doctor.qualification }}</p>
+
+            </div>
+
+        {% empty %}
+            <p class="empty">No doctors found</p>
         {% endfor %}
-    </select>
-
-    <button type="submit">Filter</button>
-
-</form>
-
-<hr>
-
-<h3>Doctors in {{ hospital.name }}</h3>
-
-{% for doctor in doctors %}
-    <div style="border:1px solid #ddd; padding:10px; margin:10px;">
-
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
-            <b>{{ doctor.name }}</b>
-        </a><br>
-
-        {{ doctor.specialization }}<br>
-        Department: {{ doctor.department.name }}
 
     </div>
-{% empty %}
-    <p>No doctors found in this hospital</p>
-{% endfor %}
+
+</div>
+
+{% endblock %}
