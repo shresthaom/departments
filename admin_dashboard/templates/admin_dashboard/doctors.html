@@ -1,32 +1,579 @@
 {% extends "admin_dashboard/base.html" %}
 
+{% block title %}Doctors Management{% endblock %}
+
+
+{% block extra_css %}
+
+<style>
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+    margin-bottom:30px;
+    flex-wrap:wrap;
+}
+
+.page-title h1{
+    margin:0;
+    font-size:30px;
+    color:#1f2937;
+}
+
+.page-title p{
+    margin-top:6px;
+    color:#6b7280;
+    font-size:15px;
+}
+
+.add-btn{
+    background:#2563eb;
+    color:#fff;
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:10px;
+    font-weight:600;
+    transition:.25s;
+}
+
+.add-btn:hover{
+    background:#1d4ed8;
+}
+
+/* ---------- Statistics ---------- */
+
+.stats-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin-bottom:30px;
+}
+
+.stat-link{
+    text-decoration:none;
+    color:inherit;
+}
+
+.stat-card{
+    background:#fff;
+    border-radius:16px;
+    padding:24px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    transition:.25s;
+    cursor:pointer;
+}
+
+.stat-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 15px 35px rgba(0,0,0,.12);
+}
+
+.stat-title{
+    font-size:14px;
+    color:#6b7280;
+}
+
+.stat-value{
+    margin-top:10px;
+    font-size:34px;
+    font-weight:700;
+    color:#1f2937;
+}
+
+/* ---------- Toolbar ---------- */
+
+.toolbar{
+    background:#fff;
+    padding:20px;
+    border-radius:16px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    margin-bottom:30px;
+}
+
+.filter-form{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr auto auto;
+    gap:15px;
+    align-items:center;
+}
+
+.filter-form input,
+.filter-form select{
+    width:100%;
+    padding:12px 14px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    outline:none;
+    font-size:15px;
+    transition:.2s;
+}
+
+.filter-form input:focus,
+.filter-form select:focus{
+    border-color:#2563eb;
+}
+
+.btn{
+    border:none;
+    border-radius:10px;
+    padding:12px 18px;
+    cursor:pointer;
+    text-decoration:none;
+    font-weight:600;
+    text-align:center;
+}
+
+.btn-primary{
+    background:#2563eb;
+    color:white;
+}
+
+.btn-primary:hover{
+    background:#1d4ed8;
+}
+
+.btn-light{
+    background:#f3f4f6;
+    color:#374151;
+}
+
+.btn-light:hover{
+    background:#e5e7eb;
+}
+
+/* ---------- Table (Part 2 will use these) ---------- */
+
+.table-card{
+    background:#fff;
+    border-radius:16px;
+    box-shadow:0 8px 20px rgba(0,0,0,.08);
+    overflow:hidden;
+}
+
+.table-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:20px 24px;
+    border-bottom:1px solid #edf2f7;
+}
+
+.table-header h2{
+    margin:0;
+    color:#1f2937;
+}
+
+.table-header span{
+    color:#6b7280;
+    font-size:14px;
+}
+
+/* ---------- Status ---------- */
+
+.badge{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:13px;
+    font-weight:600;
+}
+
+.badge-active{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.badge-inactive{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* ---------- Actions ---------- */
+
+.action-btn{
+    display:inline-block;
+    padding:8px 12px;
+    border-radius:8px;
+    text-decoration:none;
+    font-size:13px;
+    font-weight:600;
+    margin-right:6px;
+    transition:.2s;
+}
+
+.view-btn{
+    background:#dbeafe;
+    color:#1d4ed8;
+}
+
+.edit-btn{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.toggle-btn{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.delete-btn{
+    background:#fee2e2;
+    color:#b91c1c;
+}
+
+.action-btn:hover{
+    opacity:.85;
+}
+
+
+.doctor-table tbody tr{
+    transition:background .2s;
+}
+
+.doctor-table tbody tr:hover{
+    background:#f8fafc;
+}
+
+.doctor-table td strong{
+    color:#1f2937;
+    font-size:15px;
+}
+
+.doctor-table td small{
+    font-size:13px;
+    color:#6b7280;
+}
+
+.doctor-table th:last-child,
+.doctor-table td:last-child{
+    white-space:nowrap;
+}
+
+
+.doctor-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.doctor-table th{
+    background:#f8fafc;
+    color:#4b5563;
+    text-align:left;
+    padding:16px;
+    font-size:14px;
+    font-weight:600;
+}
+
+.doctor-table td{
+    padding:18px 16px;
+    border-top:1px solid #edf2f7;
+    vertical-align:middle;
+}
+/* ---------- Responsive ---------- */
+
+@media(max-width:1000px){
+
+    .stats-grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .filter-form{
+        grid-template-columns:1fr;
+    }
+
+}
+
+@media(max-width:650px){
+
+    .stats-grid{
+        grid-template-columns:1fr;
+    }
+
+    .page-header{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+}
+
+</style>
+
+{% endblock %}
+
 {% block content %}
 
-<h2>Doctors List</h2>
+<div class="page-header">
 
-<table border="1" cellpadding="10">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Specialization</th>
-        <th>Status</th>
-    </tr>
+    <div class="page-title">
+        <h1>Doctors Management</h1>
+        <p>Manage doctors across all hospitals.</p>
+    </div>
 
-    {% for doctor in doctors %}
-    <tr>
-        <td>{{ doctor.doctor_id }}</td>
-        <td>{{ doctor.name }}</td>
-        <td>{{ doctor.specialization }}</td>
-        <td>
-            {% if doctor.a_status %}
+    <a href="{% url 'add_doctor' %}" class="add-btn">
+        + Add Doctor
+    </a>
+
+</div>
+
+<div class="stats-grid">
+
+    <a href="{% url 'admin_doctors' %}" class="stat-link">
+        <div class="stat-card">
+            <div class="stat-title">Total Doctors</div>
+            <div class="stat-value">{{ total_doctors }}</div>
+        </div>
+    </a>
+
+    <a href="{% url 'admin_doctors' %}?status=active" class="stat-link">
+        <div class="stat-card">
+            <div class="stat-title">Active Doctors</div>
+            <div class="stat-value">{{ active_doctors }}</div>
+        </div>
+    </a>
+
+    <a href="{% url 'admin_doctors' %}?status=inactive" class="stat-link">
+        <div class="stat-card">
+            <div class="stat-title">Inactive Doctors</div>
+            <div class="stat-value">{{ inactive_doctors }}</div>
+        </div>
+    </a>
+
+    <a href="{% url 'admin_hospitals' %}" class="stat-link">
+        <div class="stat-card">
+            <div class="stat-title">Hospitals</div>
+            <div class="stat-value">{{ hospital_count }}</div>
+        </div>
+    </a>
+
+</div>
+
+<div class="toolbar">
+
+    <form method="GET" class="filter-form">
+
+        <input
+            type="text"
+            name="search"
+            placeholder="Search by doctor, username or specialization..."
+            value="{{ search }}">
+
+        <select name="hospital">
+
+            <option value="">All Hospitals</option>
+
+            {% for hospital in hospitals %}
+
+                <option
+                    value="{{ hospital.hospital_id }}"
+                    {% if selected_hospital == hospital.hospital_id|stringformat:"s" %}selected{% endif %}>
+
+                    {{ hospital.name }}
+
+                </option>
+
+            {% endfor %}
+
+        </select>
+
+        <select name="status">
+
+            <option value="">All Status</option>
+
+            <option value="active"
+                {% if selected_status == "active" %}selected{% endif %}>
                 Active
-            {% else %}
-                Inactive
-            {% endif %}
-        </td>
-    </tr>
-    {% endfor %}
+            </option>
 
-</table>
+            <option value="inactive"
+                {% if selected_status == "inactive" %}selected{% endif %}>
+                Inactive
+            </option>
+
+        </select>
+
+        <button type="submit" class="btn btn-primary">
+            Filter
+        </button>
+
+        <a href="{% url 'admin_doctors' %}" class="btn btn-light">
+            Reset
+        </a>
+
+    </form>
+
+</div>
+
+
+<div class="table-card">
+
+    <div class="table-header">
+
+        <div>
+            <h2>Doctor Directory</h2>
+            <span>{{ doctors|length }} doctor{{ doctors|length|pluralize }} found</span>
+        </div>
+
+        <a href="{% url 'add_doctor' %}" class="btn btn-primary">
+            + Add Doctor
+        </a>
+
+    </div>
+
+    <table class="doctor-table">
+
+        <thead>
+
+            <tr>
+
+                <th>Doctor</th>
+                <th>Username</th>
+                <th>Hospital</th>
+                <th>Department</th>
+                <th>Fee</th>
+                <th>Status</th>
+                <th style="width:260px;">Actions</th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+        {% for doctor in doctors %}
+
+            <tr>
+
+                <td>
+
+                    <strong>{{ doctor.name }}</strong>
+
+                    <br>
+
+                    <small style="color:#6b7280;">
+                        {{ doctor.specialization }}
+                    </small>
+
+                </td>
+
+                <td>
+
+                    {{ doctor.user.username }}
+
+                </td>
+
+                <td>
+
+                    {% if doctor.hospital %}
+                        {{ doctor.hospital.name }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    {% if doctor.department %}
+                        {{ doctor.department.department_name }}
+                    {% else %}
+                        —
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    Rs. {{ doctor.fees }}
+
+                </td>
+
+                <td>
+
+                    {% if doctor.a_status %}
+
+                        <span class="badge badge-active">
+                            Active
+                        </span>
+
+                    {% else %}
+
+                        <span class="badge badge-inactive">
+                            Inactive
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+                <td>
+
+                    <a
+                        href="{% url 'doctor_detail' doctor.doctor_id %}"
+                        class="action-btn view-btn">
+
+                        View
+
+                    </a>
+
+                    <a
+                        href="{% url 'edit_doctor' doctor.doctor_id %}"
+                        class="action-btn edit-btn">
+
+                        Edit
+
+                    </a>
+
+                    <a
+                        href="{% url 'toggle_doctor' doctor.doctor_id %}"
+                        class="action-btn toggle-btn">
+
+                        {% if doctor.a_status %}
+                            Deactivate
+                        {% else %}
+                            Activate
+                        {% endif %}
+
+                    </a>
+
+                    <a
+                        href="{% url 'delete_doctor' doctor.doctor_id %}"
+                        class="action-btn delete-btn">
+
+                        Delete
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        {% empty %}
+
+            <tr>
+
+                <td colspan="7" style="text-align:center;padding:50px;">
+
+                    <h3 style="margin-bottom:10px;">
+                        No doctors found
+                    </h3>
+
+                    <p style="color:#6b7280;">
+                        Try changing your filters or add a new doctor.
+                    </p>
+
+                </td>
+
+            </tr>
+
+        {% endfor %}
+
+        </tbody>
+
+    </table>
+
+</div>
+
 
 {% endblock %}

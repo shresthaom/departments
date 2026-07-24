@@ -1,82 +1,295 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Book Appointment</title>
+
+<title>Book Appointment</title>
+
+<style>
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+.container{
+    width:90%;
+    max-width:1100px;
+    margin:40px auto;
+}
+
+.back-btn{
+    text-decoration:none;
+    color:#3498db;
+    font-weight:bold;
+}
+
+h1{
+    color:#2c3e50;
+    margin:20px 0 30px;
+}
+
+.booking-layout{
+    display:grid;
+    grid-template-columns:1fr 1.2fr;
+    gap:25px;
+}
+
+.card{
+    background:white;
+    padding:25px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.info p{
+    margin:12px 0;
+    font-size:16px;
+}
+
+
+
+input[type=date]{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    margin-top:10px;
+    margin-bottom:20px;
+}
+
+.slot-box{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:10px;
+    margin-top:15px;
+}
+
+.slot-box label{
+    border:1px solid #3498db;
+    border-radius:8px;
+    padding:10px;
+    text-align:center;
+    cursor:pointer;
+}
+
+.slot-box input{
+    margin-right:5px;
+}
+
+.btn{
+    background:#3498db;
+    color:white;
+    border:none;
+    padding:12px 24px;
+    border-radius:8px;
+    cursor:pointer;
+    margin-top:20px;
+}
+
+.notice{
+    margin-top:30px;
+    background:#fff8e1;
+    border-left:5px solid #f1c40f;
+    padding:20px;
+    border-radius:8px;
+}
+
+.error{
+    color:red;
+    margin-top:15px;
+}
+
+</style>
+
 </head>
 
 <body>
 
-<a href="{% url 'doctor_detail' doctor.doctor_id %}">← Back to Doctor</a>
+<div class="container">
 
-<h2>Book Appointment with {{ doctor.name }}</h2>
+<a href="{% url 'doctor_detail' doctor.doctor_id %}" class="back-btn">
+← Back to Doctor
+</a>
 
-<form method="GET">
-    <label>Select Date:</label><br>
-    <input 
-        type="date" 
-        name="date" 
-        id="appointment_date"
-        value="{{ selected_date }}" 
-        required
-        onchange="this.form.submit()"
-    >
-</form>
+<h1>Book Appointment</h1>
 
-<br>
+<div class="booking-layout">
 
-{% if selected_date %}
-<form method="POST">
-    {% csrf_token %}
+    <!-- Doctor Information -->
 
-    <input type="hidden" name="date" value="{{ selected_date }}">
+    <div class="card info">
 
-    <label>Available Time Slots:</label><br>
-    <select name="time" id="time_slot" required>
-        {% for slot in time_slots %}
-            <option value="{{ slot }}">{{ slot }}</option>
-        {% empty %}
-            <option disabled>No slots available</option>
-        {% endfor %}
-    </select>
+        <h2>Dr. {{ doctor.name }}</h2>
 
-    <br><br>
+        <!-- <span class="available">Available</span> -->
 
-    <button type="submit">Continue</button>
-</form>
-{% endif %}
+        <p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
 
-<br>
+        <p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
 
-{% if messages %}
-    {% for message in messages %}
-        <p style="color:red;">{{ message }}</p>
-    {% endfor %}
-{% endif %}
+        <p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+
+        <p><strong>Consultation Fee:</strong> Rs. {{ doctor.fees }}</p>
+        <hr style="margin:20px 0;">
+
+<h3>Available On</h3>
+
+{% for slot in availability %}
+
+<p>
+🟢 <strong>{{ slot.day }}</strong><br>
+{{ slot.start|time:"g:i A" }} - {{ slot.end|time:"g:i A" }}
+</p>
+
+{% empty %}
+
+<p style="color:red;">
+No schedule available.
+</p>
+
+{% endfor %}
+
+    </div>
+
+    <!-- Booking Form -->
+
+    <div class="card">
+
+        <form method="GET">
+
+            <label><strong>Select Appointment Date</strong></label>
+
+            <input
+                type="date"
+                name="date"
+                id="appointment-date"
+                value="{{ selected_date }}"
+                required
+                onchange="this.form.submit()">
+
+        </form>
+
+        {% if selected_date %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <input type="hidden"
+                   name="date"
+                   value="{{ selected_date }}">
+
+            <label><strong>Select Time Slot</strong></label>
+
+            <div class="slot-box">
+
+                {% for slot in time_slots %}
+
+                <label>
+                    <input
+                        type="radio"
+                        name="time"
+                        class="time-slot"
+                        value="{{ slot }}"
+                        required>
+
+                    {{ slot }}
+                </label>
+
+                {% empty %}
+
+                <p>No slots available for this day.</p>
+
+                {% endfor %}
+
+            </div>
+
+            {% if time_slots %}
+            <button     id="continue-booking" class="btn" type="submit">
+                Continue
+            </button>
+            {% endif %}
+
+        </form>
+
+        {% endif %}
+
+        {% if messages %}
+            {% for message in messages %}
+                <p class="error">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+
+    </div>
+
+</div>
+
+<div class="notice">
+
+<h3>Booking Information</h3>
+
+<ul>
+
+<li>Appointments are available only during the doctor's working hours.</li>
+
+<li>Appointments cannot be booked on Saturdays.</li>
+
+<li>Each consultation lasts approximately 15 minutes.</li>
+
+<li>You will be asked to confirm your appointment before it is booked.</li>
+
+</ul>
+
+</div>
+
+</div>
 
 <script>
-    const dateInput = document.getElementById("appointment_date");
+
+const dateInput = document.getElementById("appointment-date");
+
+if (dateInput) {
 
     const today = new Date();
-    const maxDate = new Date();
-    maxDate.setDate(today.getDate() + 14);
 
-    function formatDate(d) {
-        return d.toISOString().split("T")[0];
+    const maxDate = new Date();
+    maxDate.setDate(maxDate.getDate() + 60);
+
+    function formatDate(date) {
+        return date.toISOString().split("T")[0];
     }
 
     dateInput.min = formatDate(today);
     dateInput.max = formatDate(maxDate);
 
     dateInput.addEventListener("change", function () {
-        const selectedDate = new Date(this.value);
-        const day = selectedDate.getDay();
 
-        if (day === 6) {
-            alert("Hospitals are closed on Saturdays.");
+        if (!this.value) {
+            return;
+        }
+
+        const selectedDate = new Date(this.value);
+
+        if (selectedDate > maxDate) {
+
+            alert("Appointments can only be booked up to 60 days in advance.");
+
+            this.value = "";
+            return;
+        }
+
+        if (selectedDate.getDay() === 6) {
+
+            alert("Appointments cannot be booked on Saturdays.");
+
             this.value = "";
         }
-    });
-</script>
 
+    });
+
+}
+
+</script>
 </body>
 </html>

@@ -1,0 +1,66 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Delete Patient{% endblock %}
+
+{% block content %}
+
+<div class="page-card" style="max-width:700px;margin:auto;">
+
+    <h2 style="margin-bottom:20px;color:#dc2626;">
+        Delete Patient
+    </h2>
+
+    <p style="margin-bottom:30px;">
+
+        Are you sure you want to permanently delete
+
+        <strong>{{ patient.name }}</strong>?
+
+    </p>
+
+    {% if appointment_exists %}
+
+        <div class="message" style="background:#fee2e2;color:#991b1b;border-left:5px solid #dc2626;">
+
+            This patient has appointment records and cannot be deleted.
+
+        </div>
+
+        <a
+            href="{% url 'admin_patients' %}"
+            class="btn btn-light">
+
+            Back
+
+        </a>
+
+    {% else %}
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            <button
+                type="submit"
+                class="btn"
+                style="background:#dc2626;color:white;">
+
+                Delete Patient
+
+            </button>
+
+            <a
+                href="{% url 'admin_patients' %}"
+                class="btn btn-light">
+
+                Cancel
+
+            </a>
+
+        </form>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

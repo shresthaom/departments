@@ -1,240 +1,296 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Doctor Dashboard</title>
+{% extends "doctors/base.html" %}
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% block title %}
+Doctor Dashboard
+{% endblock %}
 
-    <style>
-        body {
-            font-family: Arial;
-            background: #f4f6f8;
-            margin: 0;
-            padding: 20px;
-        }
+{% block page_title %}
+Dashboard
+{% endblock %}
 
-        h2 {
-            margin-bottom: 20px;
-        }
+{% block extra_css %}
 
-        .grid {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
+<style>
 
-        .box {
-            flex: 1;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            transition: 0.2s;
-        }
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px, 1fr));
+    gap:20px;
+    margin-bottom:25px;
+}
 
-        .box:hover {
-            transform: scale(1.02);
-        }
+.stat-link{
+    display:block;
+    text-decoration:none;
+    color:inherit;
+}
 
-        .box h3 {
-            margin: 0;
-            font-size: 14px;
-            color: #666;
-        }
+.box{
+    background:#fff;
+    border:1px solid #ddd;
+    border-radius:12px;
+    padding:20px;
+    transition:.2s;
+    text-align:center;
+    height:100%;
+}
 
-        .box h2 {
-            margin: 5px 0 0 0;
-        }
+.box:hover{
+    transform:translateY(-3px);
+    box-shadow:0 6px 15px rgba(0,0,0,.1);
+}
 
-        .section {
-            margin-top: 20px;
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-        }
+.box h3{
+    margin:0;
+    font-size:15px;
+    color:#666;
+    min-height:40px;
+}
 
-        .leave-box {
-            background: #ffecec;
-            padding: 10px;
-            border-radius: 8px;
-            margin-bottom: 10px;
-        }
+.box h2{
+    margin-top:10px;
+    font-size:28px;
+    color:#2563eb;
+}
 
-        .controls a {
-            margin-right: 10px;
-            text-decoration: none;
-            background: #2c3e50;
-            color: white;
-            padding: 8px 12px;
-            border-radius: 6px;
-        }
 
-        .controls a:hover {
-            background: #1a252f;
-        }
 
-        canvas {
-            width: 100% !important;
-            height: 220px !important;
-        }
+.dashboard-flex{
+    display:flex;
+    gap:20px;
+    align-items:flex-start;
+}
 
-        .dashboard-flex {
-            display: flex;
-            gap: 20px;
-            align-items: flex-start;
-        }
+.left{
+    flex:2;
+}
 
-        .left {
-            flex: 2;
-        }
+.right{
+    flex:1;
+}
 
-        .right {
-            flex: 1;
-        }
-    </style>
-</head>
+.section{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    border:1px solid #ddd;
+    margin-bottom:20px;
+}
 
-<body>
+canvas{
+    width:100% !important;
+    height:260px !important;
+}
 
-<h2>Doctor Dashboard</h2>
+.schedule-row{
+    padding:10px;
+    border-bottom:1px solid #eee;
+}
+
+.schedule-row.active{
+    background:#e8f5e9;
+    font-weight:bold;
+}
+
+@media (max-width:1200px){
+    .grid{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+
+@media (max-width:700px){
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .dashboard-flex{
+        flex-direction:column;
+    }
+
+    .left,
+    .right{
+        width:100%;
+    }
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block content %}
 
 <!-- TOP STATS -->
 <div class="grid">
 
-    <div class="box">
-        <h3>Today's Appointments</h3>
-        <h2>{{ today_count }}</h2>
-    </div>
+    <a href="{% url 'doctor_appointments' %}?status=completed"
+       class="stat-link">
 
-    <div class="box">
-        <h3>Upcoming Appointments</h3>
-        <h2>{{ upcoming_count }}</h2>
-    </div>
+        <div class="box">
+            <h3>Completed Appointments</h3>
+            <h2>{{ completed_count }}</h2>
+        </div>
 
-    <div class="box">
-        <h3>Total Leaves</h3>
-        <h2>{{ leave_count }}</h2>
-    </div>
+    </a>
+
+    <a href="{% url 'doctor_appointments' %}?status=upcoming"
+       class="stat-link">
+
+        <div class="box">
+            <h3>Upcoming Appointments</h3>
+            <h2>{{ upcoming_count }}</h2>
+        </div>
+
+    </a>
+
+    <a href="{% url 'manage_today_appointments' %}"
+       class="stat-link">
+
+        <div class="box">
+            <h3>Manage Today's Appointments</h3>
+            <h2>{{ today_count }}</h2>
+        </div>
+
+    </a>
+
+    <a href="{% url 'leave_management' %}"
+       class="stat-link">
+
+        <div class="box">
+            <h3>Total Leaves</h3>
+            <h2>{{ leave_count }}</h2>
+        </div>
+
+    </a>
 
 </div>
 
-<!-- MAIN DASHBOARD AREA -->
+
+<!-- MAIN CONTENT -->
 <div class="dashboard-flex">
 
-    <!-- LEFT SIDE -->
+    <!-- LEFT -->
     <div class="left">
 
-        <!-- TODAY SCHEDULE -->
+        <!-- TODAY'S SCHEDULE -->
         <div class="section">
+
             <h3>Today's Schedule</h3>
 
             <p>
-                <b>{{ today }} (Day {{ weekday }})</b>
+                <strong>{{ today }}</strong>
             </p>
 
             {% if today_availability %}
-                <p style="color:green; font-weight:bold;">
-                    {{ today_availability.start_time }} - {{ today_availability.end_time }}
+
+                <p style="color:green;font-weight:bold;">
+                    {{ today_availability.start_time|time:"g:i A" }}
+                    -
+                    {{ today_availability.end_time|time:"g:i A" }}
                 </p>
+
             {% else %}
-                <p style="color:red;">No schedule today</p>
+
+                <p style="color:red;">
+                    No schedule today
+                </p>
+
             {% endif %}
+
         </div>
+
 
         <!-- WEEKLY SCHEDULE -->
         <div class="section">
+
             <h3>Weekly Schedule</h3>
 
-            {% for slot in availability %}
-                <div style="
-                    padding:8px;
-                    border-bottom:1px solid #eee;
-                    {% if slot.day_of_week == weekday %}
-                        background:#e8f5e9;
-                        font-weight:bold;
+            {% for day in week_schedule %}
+
+                <div class="schedule-row {% if day.day_number == weekday %}active{% endif %}">
+
+                    <strong>{{ day.day_name }}</strong>
+
+                    {% if day.slot %}
+
+                        <span style="color:green; float:right;">
+
+                            {{ day.slot.start_time|time:"g:i A" }}
+                            -
+                            {{ day.slot.end_time|time:"g:i A" }}
+
+                        </span>
+
+                    {% else %}
+
+                        <span style="color:#888; float:right;">
+
+                            Not Available
+
+                        </span>
+
                     {% endif %}
-                ">
-                    Day {{ slot.day_of_week }} :
-                    {{ slot.start_time }} - {{ slot.end_time }}
+
                 </div>
+
             {% empty %}
-                <p>No availability set</p>
+
+                <p>No availability set.</p>
+
             {% endfor %}
+
         </div>
 
     </div>
 
-    <!-- RIGHT SIDE -->
+
+    <!-- RIGHT -->
     <div class="right">
 
         <div class="section">
+
             <h3>Appointment Analytics</h3>
 
             <canvas id="appointmentChart"></canvas>
+
         </div>
 
     </div>
 
 </div>
 
-<!-- LEAVES -->
-<div class="section">
-    <h3>Leaves</h3>
+{% endblock %}
 
-    {% for leave in leaves %}
-        <div class="leave-box">
-            <b>{{ leave.start_date }} → {{ leave.end_date }}</b><br>
-            {{ leave.reason }}
 
-            <div style="margin-top:5px;">
-                <a href="{% url 'edit_leave' leave.id %}">edit</a>
-                <a href="{% url 'delete_leave' leave.id %}">delete</a>
-            </div>
-        </div>
-    {% empty %}
-        <p>No leaves found</p>
-    {% endfor %}
-</div>
+{% block extra_js %}
 
-<!-- CONTROLS -->
-<div class="section controls">
-    <h3>Doctor Controls</h3>
-
-    <a href="{% url 'set_availability' %}">set availability</a>
-    <a href="{% url 'add_leave' %}">add leave</a>
-</div>
-
-<!-- CHART SCRIPT -->
 <script>
-    const ctx = document.getElementById('appointmentChart');
 
-    const data = {
-        labels: [
-            {% for item in appointment_stats %}
-                "{{ item.status }}",
-            {% endfor %}
-        ],
-        datasets: [{
-            label: 'Appointments',
-            data: [
-                {% for item in appointment_stats %}
-                    {{ item.total }},
-                {% endfor %}
-            ],
-            borderWidth: 1
+new Chart(document.getElementById("appointmentChart"),{
+
+    type:"doughnut",
+
+    data:{
+
+        labels: {{ chart_labels|safe }},
+
+        datasets:[{
+
+            data: {{ chart_data|safe }}
+
         }]
-    };
 
-    new Chart(ctx, {
-        type: 'pie',
-        data: data,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
+    },
+
+    options:{
+
+        responsive:true,
+        maintainAspectRatio:false
+
+    }
+
+});
+
 </script>
 
-</body>
-</html>
+{% endblock %}

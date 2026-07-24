@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Manage Today's Appointments</title>
+
+    <style>
+        body{
+            font-family:Arial;
+            background:#f4f6f8;
+            padding:30px;
+        }
+
+        h2{
+            margin-bottom:20px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th, td{
+            padding:14px;
+            border-bottom:1px solid #ddd;
+            text-align:left;
+        }
+
+        th{
+            background:#2c3e50;
+            color:white;
+        }
+
+        .status{
+            font-weight:bold;
+        }
+
+        .complete{
+            color:green;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .missed{
+            color:red;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .back{
+            display:inline-block;
+            margin-bottom:20px;
+            padding:10px 16px;
+            background:#2c3e50;
+            color:white;
+            text-decoration:none;
+            border-radius:6px;
+        }
+
+        .back:hover{
+            background:#1f2f3f;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<a href="{% url 'doctor_dashboard' %}" class="back">
+    ← Back to Dashboard
+</a>
+
+<h2>Manage Today's Appointments</h2>
+
+<table>
+
+<tr>
+    <th>Patient</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Status</th>
+    <th>Action</th>
+</tr>
+
+{% for appointment in appointments %}
+
+<tr>
+
+    <td>{{ appointment.patient.username }}</td>
+
+    <td>{{ appointment.appointment_date }}</td>
+
+    <td>{{ appointment.appointment_time }}</td>
+
+    <td class="status">
+        {{ appointment.status }}
+    </td>
+
+    <td>
+
+{% if appointment.status == "completed" %}
+
+    ✅ Completed
+
+{% elif appointment.status == "missed" %}
+
+    ❌ Missed
+
+{% elif appointment.can_update %}
+
+    <a class="complete"
+       href="{% url 'complete_appointment' appointment.appointment_id %}">
+        ✅ Complete
+    </a>
+
+    |
+
+    <a class="missed"
+       href="{% url 'missed_appointment' appointment.appointment_id %}">
+        ❌ Missed
+    </a>
+
+{% else %}
+
+    Upcoming
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+    <td colspan="5" style="text-align:center;">
+        No appointments require action.
+    </td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+</html>

@@ -1,44 +1,80 @@
 from django.contrib import admin
 from django.urls import path, include
-from django.contrib.auth import views as auth_views
-
+from django.conf import settings
+from django.conf.urls.static import static
 from HomePage.views import Home
+from patients.views import user_login, user_logout
 from .views import role_based_redirect
 
 urlpatterns = [
 
-    # homepage
-    path('', Home, name='home'),
-
-    # login (redirect handled manually)
+    # Homepage
+path('', user_login, name='home'),
+    # Login
     path(
         'login/',
-        auth_views.LoginView.as_view(
-            template_name='registration/login.html'
-        ),
+        user_login,
         name='login'
     ),
 
-    # logout
+    # Logout
     path(
         'logout/',
-        auth_views.LogoutView.as_view(),
+        user_logout,
         name='logout'
     ),
 
-    # role-based redirect after login
-    path('redirect/', role_based_redirect, name='role_redirect'),
+    # Role-based redirect after login
+    path(
+        'redirect/',
+        role_based_redirect,
+        name='role_redirect'
+    ),
 
-    # django admin
-    path('django-admin/', admin.site.urls),
+    # Django Admin
+    path(
+        'django-admin/',
+        admin.site.urls
+    ),
 
-    # dashboards
-    path('admin-dashboard/', include('admin_dashboard.urls')),
-    path('patients-dashboard/', include('patients.urls')),  # we assume this exists
+    # Dashboards
+    path(
+        'admin-dashboard/',
+        include('admin_dashboard.urls')
+    ),
 
-    # apps
-    path('patients/', include('patients.urls')),
-    path('doctors/', include('doctors.urls')),
-    path('hospitals/', include('hospitals.urls')),
-    path('appointment/', include('appointment.urls')),
+    path(
+        'patients-dashboard/',
+        include('patients.urls')
+    ),
+
+    # Apps
+    path(
+        'patients/',
+        include('patients.urls')
+    ),
+
+    path(
+        'doctors/',
+        include('doctors.urls')
+    ),
+
+    path(
+        'hospitals/',
+        include('hospitals.urls')
+    ),
+
+    path(
+        'appointment/',
+        include('appointment.urls')
+    ),
+    path("payments/", include("payments.urls")),
+    
+
+    
 ]
+if settings.DEBUG:
+    urlpatterns += static(
+        settings.MEDIA_URL,
+        document_root=settings.MEDIA_ROOT
+    )

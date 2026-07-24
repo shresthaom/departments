@@ -19,11 +19,13 @@
 
 <form method="GET">
     <label>Select New Date:</label><br>
-    <input 
-        type="date" 
-        name="date" 
+    <input
+        type="date"
+        name="date"
         id="appointment_date"
-        value="{{ selected_date }}" 
+        value="{{ selected_date }}"
+        min="{{ today }}"
+        max="{{ max_booking_date }}"
         required
         onchange="this.form.submit()"
     >
@@ -63,26 +65,26 @@
 <script>
     const dateInput = document.getElementById("appointment_date");
 
-    const today = new Date();
-    const maxDate = new Date();
-    maxDate.setDate(today.getDate() + 14);
+    if (dateInput) {
 
-    function formatDate(d) {
-        return d.toISOString().split("T")[0];
+        dateInput.addEventListener("change", function () {
+
+            if (!this.value) {
+                return;
+            }
+
+            const selectedDate = new Date(this.value);
+
+            if (selectedDate.getDay() === 6) {
+
+                alert("Hospitals are closed on Saturdays.");
+
+                this.value = "";
+            }
+
+        });
+
     }
-
-    dateInput.min = formatDate(today);
-    dateInput.max = formatDate(maxDate);
-
-    dateInput.addEventListener("change", function () {
-        const selectedDate = new Date(this.value);
-        const day = selectedDate.getDay();
-
-        if (day === 6) {
-            alert("Hospitals are closed on Saturdays.");
-            this.value = "";
-        }
-    });
 </script>
 
 </body>

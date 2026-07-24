@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ status }} Appointments</title>
+
+    <style>
+        body{
+            font-family:Arial, Helvetica, sans-serif;
+            background:#f4f6f9;
+            margin:0;
+        }
+
+        .navbar{
+            background:#2c3e50;
+            color:white;
+            padding:18px 40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .navbar a{
+            color:white;
+            text-decoration:none;
+        }
+
+        .container{
+            width:90%;
+            margin:30px auto;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            box-shadow:0 2px 8px rgba(0,0,0,.1);
+        }
+
+        th{
+            background:#2c3e50;
+            color:white;
+        }
+
+        th, td{
+            padding:14px;
+            border:1px solid #ddd;
+            text-align:center;
+        }
+
+        tr:nth-child(even){
+            background:#f9f9f9;
+        }
+
+        .back-btn{
+            display:inline-block;
+            margin-bottom:20px;
+            background:#3498db;
+            color:white;
+            text-decoration:none;
+            padding:10px 18px;
+            border-radius:8px;
+        }
+
+        .empty{
+            text-align:center;
+            color:gray;
+            margin-top:50px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="navbar">
+    <h2>{{ status }} Appointments</h2>
+
+    <a href="{% url 'patient_dashboard' %}">
+        ← Dashboard
+    </a>
+</div>
+
+<div class="container">
+
+<a href="{% url 'patient_dashboard' %}" class="back-btn">
+    Back to Dashboard
+</a>
+
+{% if appointments %}
+
+<table>
+
+<tr>
+    <th>Doctor</th>
+    <th>Hospital</th>
+    <th>Specialization</th>
+    <th>Date</th>
+    <th>Time</th>
+    <th>Status</th>
+</tr>
+
+{% for appointment in appointments %}
+
+<tr>
+    <td>{{ appointment.doctor.name }}</td>
+    <td>{{ appointment.doctor.hospital }}</td>
+    <td>{{ appointment.doctor.specialization }}</td>
+    <td>{{ appointment.appointment_date }}</td>
+    <td>{{ appointment.appointment_time }}</td>
+    <td>{{ appointment.status|title }}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<h3 class="empty">
+    No {{ status|lower }} appointments found.
+</h3>
+
+{% endif %}
+
+</div>
+
+</body>
+</html>

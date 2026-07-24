@@ -15,7 +15,7 @@
     {% csrf_token %}
 
     <label>Day of Week</label>
-    <select name="day" required>
+    <select name="day_of_week" required>
         <option value="0">Monday</option>
         <option value="1">Tuesday</option>
         <option value="2">Wednesday</option>
@@ -27,12 +27,12 @@
     <br><br>
 
     <label>Available From:</label>
-    <input type="time" name="start_time" min="09:00" max="17:00" required>
+    <input type="time" name="start_time"  required>
 
     <br><br>
 
     <label>Available To:</label>
-    <input type="time" name="end_time" min="09:00" max="17:00" required>
+    <input type="time" name="end_time" required>
 
     <br><br>
 

@@ -1,98 +1,210 @@
 <!DOCTYPE html>
 <html>
+
 <head>
+
     <title>Appointments</title>
+
 </head>
 
 <body>
 
 <h2>Your Appointments</h2>
 
-<!-- upcoming -->
 <h3>Upcoming</h3>
 
 {% for appt in upcoming %}
-    <div style="border:1px solid #ccc; padding:12px; margin-bottom:12px;">
 
-        <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
-        <p><b>Date:</b> {{ appt.appointment_date }}</p>
-        <p><b>Time:</b> {{ appt.appointment_time }}</p>
+<div
+style="
+border:1px solid #ccc;
+padding:15px;
+margin-bottom:15px;
+">
 
-        <!-- show status -->
-        <p>
-            <b>Status:</b>
-            {{ appt.status|title }}
-        </p>
+<p>
 
-        <!-- cancel option -->
-        {% if appt.status != "cancelled" %}
-            <a href="{% url 'cancel_appointment' appt.appointment_id %}"
-               style="color:red; margin-right:10px;">
-                Cancel Appointment
-            </a>
-        {% endif %}
+<b>Doctor:</b>
 
-        <!-- reschedule -->
-        <a href="{% url 'doctor_reschedule' appt.appointment_id %}">
-            Reschedule
-        </a>
+{{ appt.doctor.name }}
 
-    </div>
+</p>
+
+<p>
+
+<b>Date:</b>
+
+{{ appt.appointment_date }}
+
+</p>
+
+<p>
+
+<b>Time:</b>
+
+{{ appt.appointment_time }}
+
+</p>
+
+<p>
+
+<b>Status:</b>
+
+{{ appt.status|title }}
+
+</p>
+
+{% if appt.transaction %}
+
+<p>
+
+<b>Payment Method:</b>
+
+{{ appt.transaction.get_payment_method_display }}
+
+</p>
+
+<p>
+
+<b>Payment Status:</b>
+
+{{ appt.transaction.get_payment_status_display }}
+
+</p>
+
+{% if appt.transaction.payment_method == "stripe" and appt.transaction.payment_status != "completed" %}
+
+<a
+href="{% url 'stripe_payment' appt.appointment_id %}"
+style="
+display:inline-block;
+padding:10px 15px;
+background:#635bff;
+color:white;
+text-decoration:none;
+border-radius:5px;
+margin-right:10px;
+">
+
+Pay Now
+
+</a>
+
+{% endif %}
+
+{% endif %}
+
+{% if appt.status != "cancelled" %}
+
+<a
+href="{% url 'cancel_appointment' appt.appointment_id %}"
+style="
+color:red;
+margin-right:10px;
+">
+
+Cancel Appointment
+
+</a>
+
+{% endif %}
+
+<a
+href="{% url 'doctor_reschedule' appt.appointment_id %}">
+
+Reschedule
+
+</a>
+
+</div>
 
 {% empty %}
-    <p>No upcoming appointments.</p>
+
+<p>
+
+No upcoming appointments.
+
+</p>
+
 {% endfor %}
 
+<hr>
 
-<!-- past -->
 <h3>Past Appointments</h3>
 
 {% for appt in past %}
-    <div style="border:1px solid #aaa; padding:12px; margin-bottom:12px;">
 
-        <p><b>Doctor:</b> {{ appt.doctor.name }}</p>
-        <p><b>Date:</b> {{ appt.appointment_date }}</p>
-        <p><b>Time:</b> {{ appt.appointment_time }}</p>
+<div
+style="
+border:1px solid #ccc;
+padding:15px;
+margin-bottom:15px;
+">
 
-        <!-- always show status -->
-        <p>
-            <b>Status:</b>
-            {{ appt.status|title }}
-        </p>
+<p>
 
-        {% if appt.status == "completed" %}
+<b>Doctor:</b>
 
-            <p style="color:green;">✔ Completed</p>
+{{ appt.doctor.name }}
 
-        {% elif appt.status == "cancelled" %}
+</p>
 
-            <p style="color:red;">✖ Cancelled</p>
+<p>
 
-        {% elif appt.status == "missed" %}
+<b>Date:</b>
 
-            <p style="color:orange;">⚠ Missed</p>
+{{ appt.appointment_date }}
 
-        {% else %}
+</p>
 
-            <!-- mark completed -->
-            <a href="{% url 'doctor_mark_completed' appt.appointment_id %}"
-               style="color:green;">
-                Mark as Completed
-            </a>
+<p>
 
-            <!-- reschedule -->
-            <a href="{% url 'doctor_reschedule' appt.appointment_id %}"
-               style="color:orange; margin-left:10px;">
-                Reschedule
-            </a>
+<b>Time:</b>
 
-        {% endif %}
+{{ appt.appointment_time }}
 
-    </div>
+</p>
+
+<p>
+
+<b>Status:</b>
+
+{{ appt.status|title }}
+
+</p>
+
+{% if appt.transaction %}
+
+<p>
+
+<b>Payment Method:</b>
+
+{{ appt.transaction.get_payment_method_display }}
+
+</p>
+
+<p>
+
+<b>Payment Status:</b>
+
+{{ appt.transaction.get_payment_status_display }}
+
+</p>
+
+{% endif %}
+
+</div>
 
 {% empty %}
-    <p>No past appointments.</p>
+
+<p>
+
+No past appointments.
+
+</p>
+
 {% endfor %}
 
 </body>
+
 </html>

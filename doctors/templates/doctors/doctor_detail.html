@@ -1,17 +1,299 @@
-<a href="{% url 'doctor_list' %}">← Back to Doctors</a>
-<br>
-<a href="{% url 'hospital_list' %}">View Hospitals</a>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ doctor.name }}</title>
 
-<h2>{{ doctor.name }}</h2>
+    <style>
 
-<p><strong>Specialization:</strong> {{ doctor.specialization }}</p>
-<p><strong>Qualification:</strong> {{ doctor.qualification }}</p>
-<p><strong>Fees:</strong> Rs. {{ doctor.fees }}</p>
-<p><strong>Phone:</strong> {{ doctor.phone }}</p>
-<p><strong>Experience:</strong> {{ doctor.experience_years }} years</p>
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+.navbar{
+    background:#2c3e50;
+    color:white;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.container{
+    width:90%;
+    margin:30px auto;
+}
+
+.profile-card{
+    background:white;
+    border-radius:10px;
+    padding:30px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+    margin-bottom:30px;
+}
+
+.profile-header{
+    display:flex;
+    align-items:center;
+    gap:20px;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:#3498db;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:42px;
+}
+
+.badge{
+    display:inline-block;
+    margin-top:10px;
+    padding:6px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:13px;
+}
+
+.available{
+    background:#2ecc71;
+}
+
+.unavailable{
+    background:#e74c3c;
+}
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+    margin-top:25px;
+}
+
+.info-box{
+    background:#f8f9fa;
+    padding:18px;
+    border-radius:8px;
+}
+
+.schedule-card{
+    background:white;
+    border-radius:10px;
+    padding:25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.1);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#2c3e50;
+    color:white;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #ddd;
+    text-align:left;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:25px;
+    background:#3498db;
+    color:white;
+    text-decoration:none;
+    padding:12px 25px;
+    border-radius:8px;
+}
+
+.btn:hover{
+    background:#2980b9;
+}
+
+.back-link{
+    text-decoration:none;
+    color:#3498db;
+    font-weight:bold;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<h2>Doctor Profile</h2>
+
+<div>
+
+<a href="{% url 'doctor_list' %}">Doctors</a>
+
+<a href="{% url 'hospital_list' %}">Hospitals</a>
+
+<a href="{% url 'patient_dashboard' %}">Dashboard</a>
+
+<a href="{% url 'logout' %}">Logout</a>
+
+</div>
+
+</div>
+
+<div class="container">
+
+<a href="{% url 'doctor_list' %}" class="back-link">
+← Back to Doctors
+</a>
+
+<div class="profile-card">
+
+<div class="profile-header">
+
+<div class="avatar">
+👨‍⚕️
+</div>
+
+<div>
+
+<h1>{{ doctor.name }}</h1>
+
+<h3>{{ doctor.specialization }}</h3>
 {% if doctor.a_status %}
-    <p style="color:green;">Available</p>
-    <a href="/appointment/book/{{ doctor.doctor_id }}/">Book Appointment</a>
+<span class="badge available">
+    Available
+</span>
 {% else %}
-    <p style="color:red;">Not Available</p>
+<span class="badge unavailable">
+    Unavilable
+</span>
 {% endif %}
+
+
+</div>
+
+</div>
+
+<div class="info-grid">
+
+<div class="info-box">
+<strong>Qualification</strong><br>
+{{ doctor.qualification }}
+</div>
+
+<div class="info-box">
+<strong>Experience</strong><br>
+{{ doctor.experience_years }} years
+</div>
+
+<div class="info-box">
+<strong>Consultation Fee</strong><br>
+Rs. {{ doctor.fees }}
+</div>
+
+<div class="info-box">
+<strong>Phone</strong><br>
+{{ doctor.phone }}
+</div>
+
+{% if doctor.hospital %}
+<div class="info-box">
+<strong>Hospital</strong><br>
+{{ doctor.hospital }}
+</div>
+{% endif %}
+
+</div>
+
+{% if doctor.a_status %}
+
+<a href="{% url 'book_appointment' doctor.doctor_id %}" class="btn">
+    Book Appointment
+</a>
+
+{% else %}
+
+<button class="btn" disabled>
+    Unavailable
+</button>
+
+{% endif %}
+
+
+</div>
+
+<div class="schedule-card">
+
+<h2>Consultation Schedule</h2>
+
+{% if doctor.a_status %}
+
+<table>
+
+<tr>
+    <th>Day</th>
+    <th>Availability</th>
+</tr>
+
+{% for day in schedule %}
+
+<tr>
+
+<td>{{ day.day }}</td>
+
+<td>
+
+{% if day.available %}
+
+{{ day.start }} - {{ day.end }}
+
+{% else %}
+
+Not Available
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+{% else %}
+
+<div style="
+    margin-top:20px;
+    padding:20px;
+    background:#fff3cd;
+    border:1px solid #ffeeba;
+    border-radius:8px;
+    color:#856404;
+">
+    <strong>This doctor is currently inactive.</strong><br>
+    Consultation schedule is unavailable.
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
+</body>
+</html>

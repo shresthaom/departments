@@ -1,17 +1,217 @@
-<h2>Department: {{ department.name }}</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ department.name }} Department</title>
 
-<h3>Doctors</h3>
+    <style>
 
-{% for doctor in doctors %}
-    <div style="border:1px solid #ccc; padding:10px; margin:10px;">
-        <p><strong>{{ doctor.name }}</strong></p>
-        <p>{{ doctor.specialization }}</p>
-        <p>Fees: {{ doctor.fees }}</p>
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
 
-        <a href="{% url 'doctor_detail' doctor.doctor_id %}">
-            View Profile
-        </a>
+.navbar{
+    background:#2c3e50;
+    color:white;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.container{
+    width:90%;
+    margin:30px auto;
+}
+
+.department-header{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    margin-bottom:30px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.department-header h1{
+    margin:0;
+    color:#2c3e50;
+}
+
+.department-header p{
+    color:#666;
+    margin-top:10px;
+}
+
+.doctor-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+}
+
+.doctor-card{
+    background:white;
+    border-radius:10px;
+    padding:22px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+    transition:.2s;
+}
+
+.doctor-card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 8px 18px rgba(0,0,0,.15);
+}
+
+.badge{
+    display:inline-block;
+    background:#2ecc71;
+    color:white;
+    padding:5px 12px;
+    border-radius:20px;
+    font-size:13px;
+    margin-bottom:15px;
+}
+
+.btn{
+    display:inline-block;
+    margin-top:15px;
+    background:#3498db;
+    color:white;
+    text-decoration:none;
+    padding:10px 18px;
+    border-radius:8px;
+}
+
+.btn:hover{
+    background:#2980b9;
+}
+
+.secondary{
+    background:#7f8c8d;
+}
+
+.secondary:hover{
+    background:#6c7a89;
+}
+
+.button-group{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+    <h2>{{ department.name }} Department</h2>
+
+    <div>
+
+        <a href="{% url 'patient_dashboard' %}">Dashboard</a>
+
+        <a href="{% url 'hospital_list' %}">Hospitals</a>
+
+        <a href="{% url 'logout' %}">Logout</a>
+
     </div>
-{% empty %}
-    <p>No available doctors</p>
+
+</div>
+
+<div class="container">
+
+<div class="department-header">
+
+<h1>{{ department.name }}</h1>
+
+<p>
+Browse available doctors in the {{ department.name }} department.
+Choose a doctor to view their profile or book an appointment.
+</p>
+
+</div>
+
+<h2>Available Doctors ({{ ranked_doctors|length }})</h2>
+<div class="doctor-grid">
+
+{% for item in ranked_doctors %}
+<div class="doctor-card">
+
+<span class="badge">
+Available
+</span>
+
+<h3>{{ item.rank }}. {{ item.doctor.name }}</h3>
+<p style="
+display:inline-block;
+background:#27ae60;
+color:white;
+padding:6px 12px;
+border-radius:20px;
+font-weight:bold;
+margin:10px 0;
+">
+⭐ Recommendation Score: {{ item.score }}/100
+</p>
+
+<p style="color:#666;">
+Recommended based on availability,
+experience and qualification.
+</p>
+
+<h4>Why Recommended?</h4>
+
+{% for reason in item.breakdown %}
+<p style="margin:6px 0;">
+    ✔ {{ reason.0 }}
+    <strong>(+{{ reason.1 }} points)</strong>
+
+    {% if reason|length == 3 %}
+        - {{ reason.2 }}
+    {% endif %}
+</p>
 {% endfor %}
+<p><strong>Specialization:</strong> {{ item.doctor.specialization }}</p>
+
+<p><strong>Qualification:</strong> {{ item.doctor.qualification }}</p>
+
+<p><strong>Experience:</strong> {{ item.doctor.experience_years }} years</p>
+
+<p><strong>Fees:</strong> Rs. {{ item.doctor.fees }}</p>
+
+<div class="button-group">
+
+<a href="{% url 'doctor_detail' item.doctor.doctor_id %}" class="btn">
+    View Profile
+</a>
+
+<a href="{% url 'book_appointment' item.doctor.doctor_id %}" class="btn secondary">
+Book Appointment
+</a>
+
+</div>
+
+</div>
+
+{% empty %}
+
+<p>No available doctors in this department.</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</body>
+</html>

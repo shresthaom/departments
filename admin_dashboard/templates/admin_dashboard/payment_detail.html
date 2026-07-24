@@ -1,0 +1,244 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}
+Payment Details
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+}
+
+td:first-child{
+    width:220px;
+    font-weight:bold;
+    color:#2c3e50;
+}
+
+.status-completed{
+    color:green;
+    font-weight:bold;
+}
+
+.status-pending{
+    color:#d35400;
+    font-weight:bold;
+}
+
+.actions{
+    margin-top:30px;
+}
+
+.btn{
+    display:inline-block;
+    padding:10px 18px;
+    border-radius:6px;
+    text-decoration:none;
+    color:white;
+    margin-right:10px;
+    border:none;
+}
+
+.btn-paid{
+    background:#27ae60;
+}
+
+.btn-paid:hover{
+    background:#219150;
+}
+
+.btn-unpaid{
+    background:#e67e22;
+}
+
+.btn-unpaid:hover{
+    background:#ca6f1e;
+}
+
+.btn-receipt{
+    background:#3498db;
+}
+
+.btn-receipt:hover{
+    background:#2980b9;
+}
+
+.btn-back{
+    background:#34495e;
+}
+
+.btn-back:hover{
+    background:#2c3e50;
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="card">
+
+<h1>Payment Details</h1>
+
+<table>
+
+<tr>
+<td>Transaction ID</td>
+<td>{{ transaction.id }}</td>
+</tr>
+
+<tr>
+<td>Appointment ID</td>
+<td>{{ transaction.appointment.appointment_id }}</td>
+</tr>
+
+<tr>
+<td>Patient</td>
+<td>{{ transaction.appointment.patient.username }}</td>
+</tr>
+
+<tr>
+<td>Doctor</td>
+<td>{{ transaction.appointment.doctor.name }}</td>
+</tr>
+
+<tr>
+<td>Appointment Date</td>
+<td>{{ transaction.appointment.appointment_date }}</td>
+</tr>
+
+<tr>
+<td>Appointment Time</td>
+<td>{{ transaction.appointment.appointment_time }}</td>
+</tr>
+
+<tr>
+<td>Amount</td>
+<td>Rs. {{ transaction.amount }}</td>
+</tr>
+
+<tr>
+<td>Payment Method</td>
+<td>{{ transaction.get_payment_method_display }}</td>
+</tr>
+
+<tr>
+
+<td>Payment Status</td>
+
+<td>
+
+{% if transaction.payment_status == "completed" %}
+
+<span class="status-completed">
+Completed
+</span>
+
+{% elif transaction.payment_status == "pending" %}
+
+<span class="status-pending">
+Pending
+</span>
+
+{% else %}
+
+{{ transaction.get_payment_status_display }}
+
+{% endif %}
+
+</td>
+
+</tr>
+
+<tr>
+<td>Created At</td>
+<td>{{ transaction.created_at }}</td>
+</tr>
+
+<tr>
+<td>Last Updated</td>
+<td>{{ transaction.updated_at }}</td>
+</tr>
+
+{% if transaction.remarks %}
+
+<tr>
+<td>Remarks</td>
+<td>{{ transaction.remarks }}</td>
+</tr>
+
+{% endif %}
+
+</table>
+
+<div class="actions">
+
+{% if transaction.payment_method == "cash" %}
+
+    {% if transaction.payment_status == "pending" %}
+
+        <a
+        href="{% url 'mark_payment_paid' transaction.id %}"
+        class="btn btn-paid">
+
+            Mark Cash as Paid
+
+        </a>
+
+    {% elif transaction.payment_status == "completed" %}
+
+        <a
+        href="{% url 'mark_payment_unpaid' transaction.id %}"
+        class="btn btn-unpaid">
+
+            Mark Cash as Unpaid
+
+        </a>
+
+    {% endif %}
+
+{% endif %}
+
+{% if transaction.payment_status == "completed" %}
+
+    <a
+    href="{% url 'payment_receipt' transaction.id %}"
+    class="btn btn-receipt">
+
+        Print Receipt
+
+    </a>
+
+{% endif %}
+
+<a
+href="{% url 'admin_payments' %}"
+class="btn btn-back">
+
+Back to Payments
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

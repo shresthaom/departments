@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{% block title %}Doctor Portal{% endblock %}</title>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#f4f7fb;
+    color:#1f2937;
+}
+
+/* Sidebar */
+
+.sidebar{
+    position:fixed;
+    top:0;
+    left:0;
+    width:260px;
+    height:100vh;
+    background:#1e293b;
+    color:white;
+    display:flex;
+    flex-direction:column;
+    box-shadow:4px 0 20px rgba(0,0,0,.12);
+}
+
+/* Logo */
+
+.logo{
+    padding:28px 24px;
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+.logo h2{
+    font-size:24px;
+}
+
+.logo p{
+    margin-top:6px;
+    font-size:13px;
+    color:#94a3b8;
+}
+
+/* Navigation */
+
+.sidebar nav{
+    flex:1;
+    padding:18px 0;
+}
+
+.nav-menu{
+    list-style:none;
+    margin:0;
+    padding:0;
+}
+
+.nav-menu li{
+    margin:6px 14px;
+}
+
+.nav-menu a{
+
+    display:flex;
+    align-items:center;
+    gap:14px;
+
+    padding:14px 18px;
+
+    border-radius:12px;
+
+    color:#cbd5e1;
+    text-decoration:none;
+
+    transition:.25s;
+
+}
+
+.nav-menu a:hover{
+
+    background:#2563eb;
+    color:white;
+    transform:translateX(4px);
+
+}
+
+.nav-menu a.active{
+
+    background:#2563eb;
+    color:white;
+    box-shadow:0 6px 18px rgba(37,99,235,.35);
+
+}
+
+.nav-menu i{
+    width:22px;
+    text-align:center;
+}
+
+/* Logout */
+
+.sidebar-footer{
+
+    margin-top:auto;
+
+    padding:18px;
+
+    border-top:1px solid rgba(255,255,255,.08);
+
+}
+
+.sidebar-footer a{
+
+    display:flex;
+    align-items:center;
+    gap:14px;
+
+    padding:14px 18px;
+
+    color:#fca5a5;
+
+    text-decoration:none;
+
+    border-radius:12px;
+
+    transition:.25s;
+
+}
+
+.sidebar-footer a:hover{
+
+    background:#dc2626;
+    color:white;
+
+}
+
+/* Main */
+
+.main{
+
+    margin-left:260px;
+    min-height:100vh;
+
+}
+
+/* Header */
+
+.topbar{
+
+    height:75px;
+
+    background:white;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    padding:0 35px;
+
+    border-bottom:1px solid #e5e7eb;
+
+    position:sticky;
+
+    top:0;
+
+    z-index:500;
+
+}
+
+.topbar h2{
+
+    font-size:24px;
+
+}
+
+/* Doctor info */
+
+.doctor-info{
+
+    display:flex;
+    align-items:center;
+    gap:14px;
+
+}
+
+.avatar{
+
+    width:42px;
+    height:42px;
+
+    border-radius:50%;
+
+    background:#2563eb;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+
+}
+
+/* Content */
+
+.content{
+
+    padding:35px;
+
+}
+
+/* Messages */
+
+.message{
+
+    background:#dcfce7;
+
+    color:#166534;
+
+    padding:14px 18px;
+
+    margin-bottom:20px;
+
+    border-left:5px solid #16a34a;
+
+    border-radius:10px;
+
+}
+
+{% block extra_css %}
+{% endblock %}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+    <div class="logo">
+
+        <h2>ODAS</h2>
+
+        <p>Doctor Portal</p>
+
+    </div>
+
+    <nav>
+
+        <ul class="nav-menu">
+
+            <li>
+
+                <a href="{% url 'doctor_dashboard' %}"
+                class="{% if request.resolver_match.url_name == 'doctor_dashboard' %}active{% endif %}">
+
+                    <i class="fa-solid fa-chart-line"></i>
+
+                    <span>Dashboard</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'doctor_appointments' %}"
+                class="{% if request.resolver_match.url_name == 'doctor_appointments' %}active{% endif %}">
+
+                    <i class="fa-solid fa-calendar-check"></i>
+
+                    <span>Appointments</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'set_availability' %}"
+                class="{% if request.resolver_match.url_name == 'set_availability' %}active{% endif %}">
+
+                    <i class="fa-solid fa-clock"></i>
+
+                    <span>Availability</span>
+
+                </a>
+
+            </li>
+
+            <li>
+
+                <a href="{% url 'leave_management' %}"
+                class="{% if request.resolver_match.url_name == 'leave_management' %}active{% endif %}">
+
+                    <i class="fa-solid fa-calendar-minus"></i>
+
+                    <span>Leaves</span>
+
+                </a>
+
+            </li>
+
+        </ul>
+
+        <div class="sidebar-footer">
+
+            <a href="{% url 'logout' %}">
+
+                <i class="fa-solid fa-right-from-bracket"></i>
+
+                <span>Logout</span>
+
+            </a>
+
+        </div>
+
+    </nav>
+
+</div>
+
+<div class="main">
+
+    <div class="topbar">
+
+        <h2>{% block page_title %}Dashboard{% endblock %}</h2>
+
+        <div class="doctor-info">
+
+            <div>
+
+                <div style="font-weight:600;">
+                    Dr. {{ doctor.name }}
+                </div>
+
+                <div style="font-size:13px;color:#6b7280;">
+                    {{ doctor.specialization }}
+                </div>
+
+            </div>
+
+            <div class="avatar">
+
+                <i class="fa-solid fa-user-doctor"></i>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="content">
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+                <div class="message">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </div>
+
+</div>
+
+{% block extra_js %}
+{% endblock %}
+
+</body>
+</html>

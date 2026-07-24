@@ -1,29 +1,234 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Confirm Appointment</title>
+
+<title>Confirm Appointment</title>
+
+<style>
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.back-btn{
+    text-decoration:none;
+    color:#3498db;
+    font-weight:bold;
+}
+
+h1{
+    color:#2c3e50;
+    margin:20px 0 30px;
+}
+
+.card{
+    background:white;
+    border-radius:12px;
+    padding:30px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.summary{
+    display:grid;
+    grid-template-columns:180px 1fr;
+    row-gap:18px;
+    column-gap:15px;
+    margin-top:20px;
+}
+
+.label{
+    font-weight:bold;
+    color:#555;
+}
+
+.value{
+    color:#2c3e50;
+}
+
+.notice{
+    margin-top:30px;
+    background:#fff8e1;
+    border-left:5px solid #f1c40f;
+    padding:18px;
+    border-radius:8px;
+}
+
+.button-group{
+    display:flex;
+    justify-content:space-between;
+    margin-top:35px;
+}
+
+.btn{
+    display:inline-block;
+    padding:12px 24px;
+    border:none;
+    border-radius:8px;
+    text-decoration:none;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.cancel{
+    background:#f14f47;
+    color:white;
+}
+
+.cancel:hover{
+    background:#c20707;
+}
+
+.confirm{
+    background:#27ae60;
+    color:white;
+}
+
+.confirm:hover{
+    background:#219150;
+}
+
+</style>
+
 </head>
 
 <body>
 
-{% if messages %}
-<script>
-    {% for message in messages %}
-        alert("{{ message }}");
-    {% endfor %}
-</script>
-{% endif %}
+<div class="container">
 
-<h2>Confirm Appointment</h2>
+<a href="{% url 'book_appointment' doctor.doctor_id %}" class="back-btn">
+← Back to Booking
+</a>
 
-<p><b>Doctor:</b> {{ doctor.name }}</p>
-<p><b>Date:</b> {{ data.appointment_date }}</p>
-<p><b>Time:</b> {{ data.appointment_time }}</p>
+<h1>Confirm Appointment</h1>
+
+<div class="card">
+
+<h2>Appointment Summary</h2>
+
+<div class="summary">
+
+<div class="label"> Doctor</div>
+<div class="value">Dr. {{ doctor.name }}</div>
+
+<div class="label"> Specialization</div>
+<div class="value">{{ doctor.specialization }}</div>
+
+<div class="label"> Qualification</div>
+<div class="value">{{ doctor.qualification }}</div>
+
+<div class="label"> Date</div>
+<div class="value">{{ data.appointment_date }}</div>
+
+<div class="label"> Time</div>
+<div class="value">{{ data.appointment_time }}</div>
+
+<div class="label"> Consultation Fee</div>
+<div class="value">Rs. {{ doctor.fees }}</div>
+
+</div>
+
+<div class="notice">
+
+<strong>Please verify your appointment details.</strong>
+
+<p>
+Once confirmed, your appointment will be booked and
+will appear in your Upcoming Appointments.
+</p>
+
+</div>
 
 <form method="POST">
-    {% csrf_token %}
-    <button type="submit">Confirm Booking</button>
+
+{% csrf_token %}
+
+<div style="margin-top:30px;">
+
+<h3>Payment Method</h3>
+
+<label
+style="display:block;
+margin-bottom:15px;
+cursor:pointer;">
+
+<input
+type="radio"
+name="payment_method"
+value="stripe"
+required>
+
+Pay Online using Stripe
+
+</label>
+
+<label
+style="display:block;
+cursor:pointer;">
+
+<input
+type="radio"
+name="payment_method"
+value="cash">
+
+Pay at Hospital
+
+</label>
+
+</div>
+
+<div
+style="
+margin-top:20px;
+padding:15px;
+background:#eef7ff;
+border-left:4px solid #3498db;
+border-radius:6px;
+">
+
+<p style="margin:0;">
+<b>Stripe:</b>
+Pay securely using your debit or credit card before your appointment.
+</p>
+
+<br>
+
+<p style="margin:0;">
+<b>Pay at Hospital:</b>
+Your appointment will be booked now and payment will remain pending until you pay at the hospital.
+</p>
+
+</div>
+
+<div class="button-group">
+
+<a
+href="{% url 'book_appointment' doctor.doctor_id %}"
+class="btn cancel">
+Cancel
+</a>
+
+<button
+id="confirm-appointment"
+type="submit"
+class="btn confirm">
+Confirm Appointment
+</button>
+
+</div>
+
 </form>
+
+</div>
+
+</div>
 
 </body>
 </html>

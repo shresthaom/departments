@@ -1,0 +1,288 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}
+Receipt
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.receipt{
+
+width:700px;
+
+margin:auto;
+
+background:white;
+
+padding:40px;
+
+border-radius:10px;
+
+box-shadow:0 2px 8px rgba(0,0,0,.1);
+
+}
+
+table{
+
+width:100%;
+
+margin-top:20px;
+
+border-collapse:collapse;
+
+}
+
+td{
+
+padding:10px;
+
+border-bottom:1px solid #eee;
+
+}
+
+td:first-child{
+
+font-weight:bold;
+
+width:220px;
+
+}
+
+.actions{
+
+margin-top:30px;
+
+}
+
+.btn{
+
+display:inline-block;
+
+padding:10px 18px;
+
+background:#2c3e50;
+
+color:white;
+
+text-decoration:none;
+
+border-radius:6px;
+
+margin-right:10px;
+
+}
+
+@media print{
+
+.actions,
+.navbar{
+
+display:none;
+
+}
+
+.receipt{
+
+box-shadow:none;
+
+width:100%;
+
+}
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="receipt">
+
+<h1 style="text-align:center;">
+
+Online Doctor Appointment System
+
+</h1>
+
+<h2 style="text-align:center;">
+
+PAYMENT RECEIPT
+
+</h2>
+
+<hr>
+
+<table>
+
+<tr>
+
+<td>Receipt No.</td>
+
+<td>
+
+RCPT-{{ transaction.id }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Transaction ID</td>
+
+<td>
+
+{{ transaction.id }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Appointment ID</td>
+
+<td>
+
+{{ transaction.appointment.appointment_id }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Patient</td>
+
+<td>
+
+{{ transaction.appointment.patient.username }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Doctor</td>
+
+<td>
+
+{{ transaction.appointment.doctor.name }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Hospital</td>
+
+<td>
+
+{{ transaction.appointment.doctor.hospital }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Appointment Date</td>
+
+<td>
+
+{{ transaction.appointment.appointment_date }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Appointment Time</td>
+
+<td>
+
+{{ transaction.appointment.appointment_time }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Amount Paid</td>
+
+<td>
+
+Rs. {{ transaction.amount }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Payment Method</td>
+
+<td>
+
+{{ transaction.get_payment_method_display }}
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Status</td>
+
+<td>
+
+PAID
+
+</td>
+
+</tr>
+
+<tr>
+
+<td>Payment Date</td>
+
+<td>
+
+{{ transaction.updated_at }}
+
+</td>
+
+</tr>
+
+</table>
+
+<div class="actions">
+
+<button
+class="btn"
+onclick="window.print()">
+
+Print Receipt
+
+</button>
+
+<a
+href="{% url 'payment_detail' transaction.id %}"
+class="btn">
+
+Back
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

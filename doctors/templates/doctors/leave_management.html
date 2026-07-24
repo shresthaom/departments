@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leave Management</title>
+
+    <style>
+
+        body{
+            font-family:Arial, Helvetica, sans-serif;
+            background:#f4f6f9;
+            margin:0;
+        }
+
+        .header{
+            background:#2c3e50;
+            color:white;
+            padding:40px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+
+        .container{
+            width:95%;
+            margin:30px auto;
+        }
+
+        .top-actions{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:25px;
+        }
+
+        .btn{
+            background:#3498db;
+            color:white;
+            padding:10px 18px;
+            text-decoration:none;
+            border-radius:6px;
+        }
+
+        .btn:hover{
+            background:#2980b9;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+            border-radius:10px;
+            overflow:hidden;
+        }
+
+        th{
+            background:#2c3e50;
+            color:white;
+            padding:14px;
+        }
+
+        td{
+            padding:14px;
+            border-bottom:1px solid #eee;
+            text-align:center;
+        }
+
+        tr:hover{
+            background:#f8f8f8;
+        }
+
+        .action{
+            color:#3498db;
+            text-decoration:none;
+            margin:0 6px;
+        }
+
+        .empty{
+            background:white;
+            padding:40px;
+            text-align:center;
+            border-radius:10px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+
+    <h1>Leave Management</h1>
+
+    <a href="{% url 'doctor_dashboard' %}"
+       style="color:white;text-decoration:none;font-size:20px;">
+        ← Dashboard
+    </a>
+
+</div>
+
+<div class="container">
+
+    <div class="top-actions">
+
+        <h2>Your Leave History</h2>
+
+        <a href="{% url 'add_leave' %}" class="btn">
+            + Add Leave
+        </a>
+
+    </div>
+
+    {% if leaves %}
+
+    <table>
+
+        <tr>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Actions</th>
+
+        </tr>
+
+        {% for leave in leaves %}
+        <tr>
+
+            <td>{{ leave.start_date }}</td>
+
+            <td>{{ leave.end_date }}</td>
+
+            <td>{{ leave.reason }}</td>
+
+            <!-- Status -->
+            <td>
+
+                {% if leave.status == "approved" %}
+
+                    <span style="color:green; font-weight:bold;">
+                        Approved
+                    </span>
+
+                {% elif leave.status == "rejected" %}
+
+                    <span style="color:red; font-weight:bold;">
+                        Rejected
+                    </span>
+
+                {% else %}
+
+                    <span style="color:orange; font-weight:bold;">
+                        Pending
+                    </span>
+
+                {% endif %}
+
+    </td>
+
+    <!-- Actions -->
+    <td>
+
+    {% if leave.status == "pending" %}
+
+  <a href="{% url 'edit_leave' leave.id %}" class="action">
+    Edit
+</a>
+
+|
+
+<a href="{% url 'delete_leave' leave.id %}" class="action">
+    Delete
+</a>
+    {% elif leave.status == "approved" %}
+
+    {% if leave.start_date <= today and today < leave.end_date %}
+
+        <a href="{% url 'end_leave_early' leave.id %}"
+           class="action"
+           style="color:green;font-weight:bold;">
+            End Leave Early
+        </a>
+
+    {% else %}
+
+        <span style="color:gray;font-weight:bold;">
+            Locked
+        </span>
+
+    {% endif %}
+
+{% else %}
+
+    <span style="color:gray;font-weight:bold;">
+        Locked
+    </span>
+
+{% endif %}
+
+</td>
+</tr>
+{% endfor %}
+
+    </table>
+
+    {% else %}
+
+    <div class="empty">
+
+        <h3>No leave records found.</h3>
+
+        <p>Click <b>Add Leave</b> to create one.</p>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+</body>
+</html>

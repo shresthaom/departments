@@ -14,4 +14,30 @@ urlpatterns = [
     views.cancel_appointment,
     name="cancel_appointment"
 ),
+path(
+    "report/<int:appointment_id>/",
+    views.upload_report,
+    name="upload_report",
+),
+path(
+    "reports/",
+    views.patient_reports,
+    name="patient_reports",
+),
+
+
+
+
+path(
+    "report/<int:appointment_id>/view/",
+    views.view_report,
+    name="view_report",
+),
+
+path(
+    "report/<int:appointment_id>/edit/",
+    views.edit_report,
+    name="edit_report",
+),
+
 ]

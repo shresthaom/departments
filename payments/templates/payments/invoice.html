@@ -1,0 +1,232 @@
+{% extends "patients/base.html" %}
+
+{% block title %}
+Payment Invoice
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.invoice{
+    max-width:750px;
+    margin:40px auto;
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    box-shadow:0 2px 10px rgba(0,0,0,.12);
+}
+
+.invoice h1,
+.invoice h2{
+    text-align:center;
+    margin:5px 0;
+}
+
+.invoice h1{
+    color:#2c3e50;
+}
+
+.invoice h2{
+    color:#3498db;
+}
+
+table{
+    width:100%;
+    margin-top:25px;
+    border-collapse:collapse;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #e5e5e5;
+}
+
+td:first-child{
+    width:240px;
+    font-weight:bold;
+    color:#2c3e50;
+}
+
+.total{
+    margin-top:25px;
+    padding:18px;
+    background:#f8f9fa;
+    border-left:6px solid #3498db;
+    font-size:22px;
+    font-weight:bold;
+}
+
+.note{
+    margin-top:30px;
+    background:#fff8e6;
+    border-left:6px solid #f39c12;
+    padding:18px;
+    line-height:1.7;
+}
+
+.actions{
+    margin-top:35px;
+    text-align:center;
+}
+
+.btn{
+    display:inline-block;
+    padding:10px 18px;
+    background:#2c3e50;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    margin:0 6px;
+}
+
+.btn:hover{
+    background:#1f2d3a;
+}
+
+.status-pending{
+    color:#e67e22;
+    font-weight:bold;
+}
+
+@media print{
+
+.navbar,
+.actions{
+    display:none;
+}
+
+body{
+    background:white;
+}
+
+.invoice{
+    width:100%;
+    max-width:100%;
+    margin:0;
+    padding:0;
+    box-shadow:none;
+}
+
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<div class="invoice">
+
+<h1>ONLINE DOCTOR APPOINTMENT SYSTEM</h1>
+
+<h2>PAYMENT INVOICE</h2>
+
+<hr>
+
+<table>
+
+<tr>
+<td>Invoice Number</td>
+<td>INV-{{ transaction.id|stringformat:"06d" }}</td>
+</tr>
+
+<tr>
+<td>Transaction ID</td>
+<td>{{ transaction.id }}</td>
+</tr>
+
+<tr>
+<td>Appointment ID</td>
+<td>{{ transaction.appointment.appointment_id }}</td>
+</tr>
+
+<tr>
+<td>Patient</td>
+<td>{{ transaction.appointment.patient.username }}</td>
+</tr>
+
+<tr>
+<td>Doctor</td>
+<td>Dr. {{ transaction.appointment.doctor.name }}</td>
+</tr>
+
+<tr>
+<td>Hospital</td>
+<td>{{ transaction.appointment.doctor.hospital }}</td>
+</tr>
+
+<tr>
+<td>Appointment Date</td>
+<td>{{ transaction.appointment.appointment_date|date:"F d, Y" }}</td>
+</tr>
+
+<tr>
+<td>Appointment Time</td>
+<td>{{ transaction.appointment.appointment_time|time:"h:i A" }}</td>
+</tr>
+
+<tr>
+<td>Consultation Fee</td>
+<td>Rs. {{ transaction.amount }}</td>
+</tr>
+
+<tr>
+<td>Payment Method</td>
+<td>{{ transaction.get_payment_method_display }}</td>
+</tr>
+
+<tr>
+<td>Status</td>
+<td class="status-pending">
+PENDING
+</td>
+</tr>
+
+</table>
+
+<div class="total">
+
+Amount Due :
+Rs. {{ transaction.amount }}
+
+</div>
+
+<div class="note">
+
+<strong>Payment Notice</strong>
+
+<br><br>
+
+This invoice has been generated for your scheduled appointment.
+
+Please complete the payment before or during your hospital visit.
+
+A payment receipt will be generated automatically after the payment has been completed.
+
+</div>
+
+<div class="actions">
+
+<button
+type="button"
+class="btn"
+onclick="window.print()">
+
+Print Invoice
+
+</button>
+
+<a
+href="{% url 'my_payments' %}"
+class="btn">
+
+Back to My Payments
+
+</a>
+
+</div>
+
+</div>
+
+{% endblock %}

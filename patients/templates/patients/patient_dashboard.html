@@ -1,49 +1,477 @@
-<a href="{% url 'home' %}">Home</a> |
-<a href="{% url 'hospital_list' %}">Hospitals</a> |
-<a href="{% url 'doctor_list' %}">Doctors</a>
+{% extends "patients/base.html" %}
+
+{% block title %}
+Patient Dashboard
+{% endblock %}
+
+{% block content %}
+
+<!-- Notifications -->
+
+<div style="width:90%; margin:25px auto;">
+
+    <div style="
+        background:white;
+        padding:20px;
+        border-radius:10px;
+        box-shadow:0 2px 8px rgba(0,0,0,.1);
+    ">
+
+        <h2>
+             Notifications
+
+            {% if unread_notifications %}
+                <span style="
+                    background:red;
+                    color:white;
+                    padding:3px 10px;
+                    border-radius:20px;
+                    font-size:14px;
+                ">
+                    {{ unread_notifications }}
+                </span>
+            {% endif %}
+        </h2>
+
+        {% for notification in notifications %}
+
+        <div style="
+            padding:15px 0;
+            border-bottom:1px solid #eee;
+        ">
+
+            <h4>
+
+                {% if notification.reminder_type == "12_hours" or notification.reminder_type == "2_hours" %}
+                    ⏰
+                {% elif notification.title == "Appointment Confirmed" %}
+                    📅
+                {% elif notification.title == "Appointment Rescheduled" %}
+                    🔄
+                {% elif notification.title == "Appointment Cancelled" %}
+                    ❌
+                {% elif notification.title == "Appointment Completed" %}
+                    ✅
+                {% else %}
+                    🔔
+                {% endif %}
+
+                {{ notification.title }}
+
+            </h4>
+
+            <p>{{ notification.message }}</p>
+
+            <small>
+                {{ notification.created_at|timesince }} ago
+            </small>
+
+        </div>
+
+        {% empty %}
+
+        <p>No notifications.</p>
+
+        {% endfor %}
+
+        <a
+            href="{% url 'all_notifications' %}"
+            style="
+                display:block;
+                margin-top:15px;
+                text-align:right;
+                text-decoration:none;
+                color:#3498db;
+                font-weight:bold;
+            ">
+            View All Notifications →
+        </a>
+
+    </div>
+
+</div>
+
+<h1>Welcome, {{ patient.name }}</h1>
 
 {% if messages %}
     {% for message in messages %}
-        <script>
-            alert("{{ message }}");
-        </script>
-    {% endfor %}
-{% endif %}
-
-<h2>Welcome, {{ patient.name }}</h2>
-
-<h3>Upcoming Appointments ({{ upcoming_count }})</h3>
-
-{% if upcoming %}
-    {% for appt in upcoming %}
-        <a href="{% url 'appointment_detail' appt.appointment_id %}" style="text-decoration:none; color:black;">
-            <div style="border:1px solid #ccc; padding:15px; margin-bottom:10px; border-radius:8px; cursor:pointer;">
-                <p><strong>Doctor:</strong> {{ appt.doctor.name }}</p>
-                <p><strong>Date:</strong> {{ appt.appointment_date }}</p>
-                <p><strong>Time:</strong> {{ appt.appointment_time }}</p>
-            </div>
-        </a>
-    {% endfor %}
-{% else %}
-    <p>No upcoming appointments</p>
-{% endif %}
-
-
-<h3>Past Appointments</h3>
-
-{% if past %}
-    {% for appt in past %}
-        <div style="border:1px solid #ccc; padding:15px; margin-bottom:10px; border-radius:8px;">
-            <p><strong>Doctor:</strong> {{ appt.doctor.name }}</p>
-            <p><strong>Date:</strong> {{ appt.appointment_date }}</p>
-            <p><strong>Time:</strong> {{ appt.appointment_time }}</p>
+        <div style="
+            background:#d4edda;
+            color:#155724;
+            border:1px solid #c3e6cb;
+            padding:15px;
+            border-radius:8px;
+            margin:20px 0;
+            font-weight:bold;
+        ">
+            ✅ {{ message }}
         </div>
     {% endfor %}
-{% else %}
-    <p>No past appointments</p>
 {% endif %}
 
-<br>
+<!-- Statistics -->
 
-<a href="{% url 'doctor_list' %}">Book Appointment</a><br><br>
-<a href="{% url 'logout' %}">Logout</a>
+<div class="stats">
+
+    <a href="{% url 'appointment_list' 'upcoming' %}" class="card stat-card">
+        <h2>{{ upcoming_count }}</h2>
+        <p>Upcoming</p>
+    </a>
+
+    <a href="{% url 'appointment_list' 'completed' %}" class="card stat-card">
+        <h2>{{ completed }}</h2>
+        <p>Completed</p>
+    </a>
+
+    <a href="{% url 'appointment_list' 'cancelled' %}" class="card stat-card">
+        <h2>{{ cancelled }}</h2>
+        <p>Cancelled</p>
+    </a>
+
+    <a href="{% url 'appointment_list' 'missed' %}" class="card stat-card">
+        <h2>{{ missed }}</h2>
+        <p>Missed</p>
+    </a>
+
+</div>
+
+<!-- Quick Actions -->
+
+<h2>Quick Actions</h2>
+
+<div class="actions">
+
+    <a href="{% url 'doctor_list' %}?mode=book" class="btn">
+        Book Appointment
+    </a>
+
+    <a href="{% url 'department_list' %}" class="btn">
+        Departments
+    </a>
+
+    <a href="{% url 'hospital_list' %}" class="btn">
+        Hospitals
+    </a>
+
+    <a href="{% url 'patient_reports' %}" class="btn">
+        Medical Reports
+    </a>
+
+</div>
+
+<!-- Upcoming -->
+
+<div class="section">
+
+    <h2>
+        Upcoming Appointments ({{ upcoming_count }})
+    </h2>
+
+    {% for appt in upcoming|slice:":2" %}
+
+    <div class="appointment-card">
+
+        <h3>Dr. {{ appt.doctor.name }}</h3>
+
+        <p><strong>{{ appt.doctor.specialization }}</strong></p>
+
+        <p>📅 {{ appt.appointment_date }}</p>
+
+        <p>🕒 {{ appt.appointment_time }}</p>
+
+        <span class="badge upcoming">
+            {{ appt.status|title }}
+        </span>
+
+        <div style="margin-top:15px;">
+
+            <a href="{% url 'appointment_detail' appt.appointment_id %}"
+               class="btn">
+
+                View Details
+
+            </a>
+
+        </div>
+
+    </div>
+
+    {% empty %}
+
+    <p>No upcoming appointments.</p>
+
+    {% endfor %}
+
+    <div id="moreAppointments" style="display:none;">
+
+        {% for appt in upcoming|slice:"2:" %}
+
+        <div class="appointment-card">
+
+            <h3>Dr. {{ appt.doctor.name }}</h3>
+
+            <p><strong>{{ appt.doctor.specialization }}</strong></p>
+
+            <p>📅 {{ appt.appointment_date }}</p>
+
+            <p>🕒 {{ appt.appointment_time }}</p>
+
+            <span class="badge upcoming">
+                {{ appt.status|title }}
+            </span>
+
+            <div style="margin-top:15px;">
+
+                <a href="{% url 'appointment_detail' appt.appointment_id %}"
+                   class="btn">
+
+                    View Details
+
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+    </div>
+
+    {% if upcoming_count > 2 %}
+
+    <div style="text-align:right;margin-top:15px;">
+
+        <a href="#"
+           id="toggleAppointments"
+           style="
+                text-decoration:none;
+                color:#3498db;
+                font-weight:bold;
+           ">
+
+            View All Upcoming →
+
+        </a>
+
+    </div>
+
+    {% endif %}
+
+</div>
+
+<!-- Recommended Doctors -->
+
+<div class="section">
+
+<h2 style="
+border-left:5px solid #3498db;
+padding-left:12px;
+margin-bottom:20px;
+">
+
+Recommended Doctors
+
+</h2>
+
+<div class="recommendation-grid">
+
+{% for item in recommended %}
+
+<div class="appointment-card">
+
+<span style="
+background:#27ae60;
+color:white;
+padding:5px 10px;
+border-radius:20px;
+font-size:12px;
+display:inline-block;
+margin-bottom:10px;
+">
+
+⭐ Recommended
+
+</span>
+
+<h3>
+
+{{ forloop.counter }}.
+{{ item.doctor.name }}
+
+</h3>
+
+<p style="
+display:inline-block;
+background:#27ae60;
+color:white;
+padding:8px 14px;
+border-radius:20px;
+font-weight:bold;
+margin:10px 0;
+">
+
+⭐ Recommendation Score:
+{{ item.score }}/100
+
+</p>
+
+    <p>
+        <strong>Hospital:</strong>
+        {{ item.doctor.hospital }}
+    </p>
+
+    <p>
+        <strong>Specialization:</strong>
+        {{ item.doctor.specialization }}
+    </p>
+
+    <p>
+        <strong>Experience:</strong>
+        {{ item.doctor.experience_years }} years
+    </p>
+
+    <p style="color:#666;">
+        Recommended based on availability,
+        experience and qualification.
+    </p>
+
+    <h4>Why Recommended?</h4>
+
+    <div style="margin-top:10px;">
+
+        {% for reason in item.breakdown %}
+
+        <p style="margin:6px 0;">
+
+            ✔ {{ reason.0 }}
+
+            <strong>
+                (+{{ reason.1 }} points)
+            </strong>
+
+            {% if reason|length == 3 %}
+                - {{ reason.2 }}
+            {% endif %}
+
+        </p>
+
+        {% endfor %}
+
+    </div>
+
+    <a
+        id="book-appointment-btn"
+        href="{% url 'doctor_list' %}?mode=book"
+        class="btn">
+
+        Book Appointment
+
+    </a>
+
+</div>
+
+{% empty %}
+
+<p>No recommended doctors available.</p>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+<!-- Appointment Statistics -->
+
+<div class="section">
+
+    <h2 style="
+        border-left:5px solid #3498db;
+        padding-left:12px;
+        margin-bottom:20px;
+    ">
+        Appointment Statistics
+    </h2>
+
+    <div class="appointment-card">
+
+        <div style="
+            display:flex;
+            justify-content:center;
+        ">
+
+            <canvas id="patientChart"></canvas>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script>
+
+new Chart(document.getElementById("patientChart"), {
+
+    type: "doughnut",
+
+    data: {
+
+        labels: [
+            "Upcoming",
+            "Completed",
+            "Cancelled",
+            "Missed"
+        ],
+
+        datasets: [{
+
+            data: [
+
+                {{ upcoming_count }},
+                {{ completed }},
+                {{ cancelled }},
+                {{ missed }}
+
+            ]
+
+        }]
+
+    }
+
+});
+
+</script>
+
+<script>
+
+const toggleBtn = document.getElementById("toggleAppointments");
+const moreAppointments = document.getElementById("moreAppointments");
+
+if (toggleBtn) {
+
+    toggleBtn.addEventListener("click", function(e) {
+
+        e.preventDefault();
+
+        if (moreAppointments.style.display === "none") {
+
+            moreAppointments.style.display = "block";
+            toggleBtn.innerHTML = "Show Less ↑";
+
+        } else {
+
+            moreAppointments.style.display = "none";
+            toggleBtn.innerHTML = "View All Upcoming →";
+
+        }
+
+    });
+
+}
+
+</script>
+
+{% endblock %}

@@ -1,20 +1,110 @@
-<h2>Appointment Details</h2>
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Appointment Details</title>
+
+    <style>
+
+body{
+    font-family:Arial;
+    background:#f4f6f9;
+}
+
+.container{
+    width:700px;
+    margin:40px auto;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:10px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+h1{
+    color:#2c3e50;
+}
+
+p{
+    font-size:18px;
+}
+
+.btn{
+    display:inline-block;
+    text-decoration:none;
+    color:white;
+    background:#3498db;
+    padding:10px 18px;
+    border-radius:8px;
+    margin-top:20px;
+}
+
+.cancel{
+    background:#e74c3c;
+}
+
+.back{
+    background:#7f8c8d;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h1>Appointment Details</h1>
+
+<hr>
 
 <p><strong>Doctor:</strong> {{ appointment.doctor.name }}</p>
+
+<p><strong>Hospital:</strong> {{ appointment.doctor.hospital }}</p>
+
+<p><strong>Specialization:</strong> {{ appointment.doctor.specialization }}</p>
+
 <p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+
 <p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
-<p><strong>Status:</strong> {{ appointment.status }}</p>
 
-<br>
+<p><strong>Status:</strong> {{ appointment.status|title }}</p>
 
-<form method="POST" action="{% url 'cancel_appointment' appointment.appointment_id %}" 
+<a href="{% url 'reschedule_appointment' appointment.appointment_id %}"
+   class="btn">
+    Reschedule Appointment
+</a>
+<form method="POST"
+      action="{% url 'patient_cancel_appointment' appointment.appointment_id %}"
+      style="display:inline;"
       onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+
     {% csrf_token %}
-    <button type="submit" style="color:white; background:red; padding:10px; border:none; border-radius:5px;">
+
+    <button type="submit" class="btn cancel">
         Cancel Appointment
     </button>
+
 </form>
 
-<br><br>
 
-<a href="{% url 'patient_dashboard' %}">Back to Dashboard</a>
+<a href="{% url 'patient_dashboard' %}"
+class="btn back">
+
+Back
+
+</a>
+
+</div>
+
+</div>
+
+</body>
+
+</html>

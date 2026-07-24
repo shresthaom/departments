@@ -1,0 +1,146 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Delete Doctor{% endblock %}
+
+{% block content %}
+
+<div style="max-width:650px;margin:50px auto;">
+
+    <div style="
+        background:#ffffff;
+        padding:35px;
+        border-radius:15px;
+        box-shadow:0 10px 25px rgba(0,0,0,.08);
+        text-align:center;
+    ">
+
+        <h2 style="color:#dc2626;margin-bottom:20px;">
+            Delete Doctor
+        </h2>
+
+        <p style="font-size:17px;margin-bottom:10px;">
+            You are about to permanently delete
+        </p>
+
+        <h3 style="margin-bottom:30px;color:#1f2937;">
+            Dr. {{ doctor.name }}
+        </h3>
+
+        {% if appointment_exists %}
+
+            <div style="
+                background:#fee2e2;
+                color:#991b1b;
+                padding:18px;
+                border-radius:10px;
+                margin-bottom:30px;
+                text-align:left;
+            ">
+
+                <strong>Deletion Not Allowed</strong>
+
+                <p style="margin-top:10px;margin-bottom:0;">
+
+                    This doctor has appointment records in the system.
+
+                    <br><br>
+
+                    To preserve appointment history and maintain database
+                    integrity, doctors with existing appointments cannot
+                    be permanently deleted.
+
+                </p>
+
+            </div>
+
+            <a
+                href="{% url 'admin_doctors' %}"
+                style="
+                    display:inline-block;
+                    background:#6b7280;
+                    color:white;
+                    padding:12px 25px;
+                    border-radius:8px;
+                    text-decoration:none;
+                    font-weight:600;
+                ">
+
+                Back
+
+            </a>
+
+        {% else %}
+
+            <div style="
+                background:#fef3c7;
+                color:#92400e;
+                padding:18px;
+                border-radius:10px;
+                margin-bottom:30px;
+                text-align:left;
+            ">
+
+                <strong>Warning</strong>
+
+                <p style="margin-top:10px;margin-bottom:0;">
+
+                    This action will permanently remove this doctor from
+                    the system.
+
+                    <br><br>
+
+                    • Doctor profile will be deleted.<br>
+                    • Login account will be deleted.<br>
+                    • This action cannot be undone.
+
+                </p>
+
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    type="submit"
+                    style="
+                        background:#dc2626;
+                        color:white;
+                        border:none;
+                        padding:12px 28px;
+                        border-radius:8px;
+                        cursor:pointer;
+                        font-size:16px;
+                        font-weight:600;
+                        margin-right:10px;
+                    ">
+
+                    Delete Doctor
+
+                </button>
+
+                <a
+                    href="{% url 'admin_doctors' %}"
+                    style="
+                        display:inline-block;
+                        background:#6b7280;
+                        color:white;
+                        padding:12px 28px;
+                        border-radius:8px;
+                        text-decoration:none;
+                        font-weight:600;
+                    ">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}

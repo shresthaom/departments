@@ -1,12 +1,346 @@
-<h2>Login</h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login | DocAp</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+
+    <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:#eef5ff;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    height:100vh;
+}
+
+.container{
+
+    width:480px;
+
+    background:white;
+
+    padding:50px;
+
+    border-radius:18px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.12);
+}
+
+.logo{
+
+    text-align:center;
+
+    font-size:38px;
+
+    color:#1565c0;
+
+    margin-bottom:15px;
+}
+
+h1{
+
+    text-align:center;
+
+    margin-bottom:10px;
+
+    color:#222;
+}
+
+.subtitle{
+
+    text-align:center;
+
+    color:#666;
+
+    margin-bottom:35px;
+
+    line-height:1.6;
+}
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:bold;
+
+    color:#444;
+}
+
+input{
+
+    width:100%;
+
+    padding:14px;
+
+    margin-bottom:20px;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    font-size:16px;
+}
+
+input:focus{
+
+    outline:none;
+
+    border-color:#1565c0;
+}
+.password-container{
+    position:relative;
+    margin-bottom:20px;
+}
+
+.password-container input{
+    width:100%;
+    padding:14px 45px 14px 14px;
+    margin-bottom:0;
+}
+
+.toggle-password{
+    position:absolute;
+    right:15px;
+    top:50%;
+    transform:translateY(-50%);
+    width:20px;
+    height:20px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    color:#666;
+    font-size:18px;
+}
+
+.toggle-password:hover{
+    color:#1565c0;
+}
+
+
+
+.toggle-password:hover{
+    color:#1565c0;
+}
+
+
+button{
+
+    width:100%;
+
+    padding:15px;
+
+    border:none;
+
+    border-radius:8px;
+
+    background:#1565c0;
+
+    color:white;
+
+    font-size:17px;
+
+    cursor:pointer;
+
+    transition:.3s;
+}
+
+button:hover{
+
+    background:#0d47a1;
+}
+
+.register{
+
+    text-align:center;
+
+    margin-top:25px;
+}
+
+.register a{
+
+    color:#1565c0;
+
+    text-decoration:none;
+
+    font-weight:bold;
+}
+
+.features{
+
+    margin-top:35px;
+
+    border-top:1px solid #eee;
+
+    padding-top:25px;
+
+    color:#555;
+
+    line-height:2;
+}
+
+.messages{
+
+    margin-bottom:20px;
+}
+
+.message{
+
+    background:#fdecea;
+
+    color:#b71c1c;
+
+    padding:12px;
+
+    border-radius:6px;
+
+    margin-bottom:10px;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="logo">
+
+ DocAp
+
+</div>
+
+<p class="subtitle">
+
+Online Doctor Appointment Booking System
+
+</p>
+
+{% if messages %}
+<div class="messages">
+    {% for message in messages %}
+        <div class="message">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
 
 <form method="POST">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username"><br><br>
-    <input type="password" name="password" placeholder="Password"><br><br>
-    <button type="submit">Login</button>
+
+{% csrf_token %}
+
+<label>
+
+Phone Number or Username
+
+</label>
+
+<input
+type="text"
+name="login_id"
+placeholder="Enter phone number or username"
+required
+autocomplete="username">
+
+<label>Password</label>
+
+<div class="password-container">
+
+    <input
+        id="password"
+        type="password"
+        name="password"
+        placeholder="Enter password"
+        required>
+
+    <span
+    class="toggle-password"
+    onclick="togglePassword()"
+    role="button"
+    tabindex="0"
+    aria-label="Show or hide password">
+
+    <i id="eyeIcon" class="fa-solid fa-eye"></i>
+
+</span>
+
+</div>
+
+<button type="submit">
+
+Login
+
+</button>
+
 </form>
 
-<br>
+<div class="register">
 
-<a href="{% url 'register' %}">Create account</a>
+Don't have an account?
+
+<br><br>
+
+<a href="{% url 'register' %}">
+
+Register as Patient
+
+</a>
+
+</div>
+
+<div class="features">
+
+✔ Smart Doctor Recommendation<br>
+
+✔ Easy Appointment Booking<br>
+
+✔ Secure Medical Reports
+
+</div>
+
+</div>
+<script>
+
+function togglePassword(){
+
+    const password = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    if(password.type === "password"){
+
+        password.type = "text";
+
+        eyeIcon.classList.remove("fa-eye");
+        eyeIcon.classList.add("fa-eye-slash");
+
+    }else{
+
+        password.type = "password";
+
+        eyeIcon.classList.remove("fa-eye-slash");
+        eyeIcon.classList.add("fa-eye");
+
+    }
+
+}
+
+</script>
+</body>
+</html>

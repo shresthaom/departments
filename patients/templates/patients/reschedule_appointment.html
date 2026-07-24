@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reschedule Appointment</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f6f9;
+        }
+
+        .container{
+            width:500px;
+            margin:50px auto;
+        }
+
+        .card{
+            background:white;
+            padding:30px;
+            border-radius:10px;
+            box-shadow:0 2px 8px rgba(0,0,0,.1);
+        }
+
+        input,
+        select{
+            width:100%;
+            padding:10px;
+            margin:10px 0 20px;
+            font-size:16px;
+            border:1px solid #ccc;
+            border-radius:6px;
+        }
+
+        .btn{
+            background:#3498db;
+            color:white;
+            border:none;
+            padding:12px 20px;
+            border-radius:8px;
+            cursor:pointer;
+        }
+
+        .back{
+            background:#7f8c8d;
+            text-decoration:none;
+            color:white;
+            padding:12px 20px;
+            border-radius:8px;
+            margin-left:10px;
+        }
+
+        .message{
+            background:#fdecea;
+            color:#c62828;
+            padding:12px;
+            border-radius:6px;
+            margin-bottom:20px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Reschedule Appointment</h2>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="message">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<form method="POST">
+
+{% csrf_token %}
+
+<label>New Date</label>
+
+{% if selected_date %}
+
+<input
+type="date"
+name="appointment_date"
+value="{{ selected_date }}"
+required
+onchange="window.location='?date='+this.value;">
+
+{% else %}
+
+<input
+type="date"
+name="appointment_date"
+value="{{ appointment.appointment_date|date:'Y-m-d' }}"
+required
+onchange="window.location='?date='+this.value;">
+
+{% endif %}
+<label>Available Time</label>
+
+<select name="appointment_time" required>
+
+{% if slots %}
+
+    {% for slot in slots %}
+
+        <option value="{{ slot }}">
+            {{ slot }}
+        </option>
+
+    {% endfor %}
+
+{% else %}
+
+    <option disabled selected>
+        No available time slots
+    </option>
+
+{% endif %}
+
+</select>
+
+<button type="submit" class="btn">
+    Save Changes
+</button>
+
+<a href="{% url 'appointment_detail' appointment.appointment_id %}"
+class="back">
+    Cancel
+</a>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

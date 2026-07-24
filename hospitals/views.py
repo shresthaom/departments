@@ -1,3 +1,4 @@
+from doctors.ranking import calculate_score_with_breakdown
 from django.shortcuts import render, get_object_or_404
 from django.db.models import Q
 from .models import Hospital, Department
@@ -5,7 +6,7 @@ from doctors.models import Doctor
 
 
 # -------------------------------
-# 🏥 Hospital List
+#  Hospital List
 # -------------------------------
 def hospital_list(request):
     query = request.GET.get('q')
@@ -21,7 +22,7 @@ def hospital_list(request):
 
 
 # -------------------------------
-# 🏥 Hospital Detail
+#  Hospital Detail
 # -------------------------------
 def hospital_detail(request, hospital_id):
     hospital = get_object_or_404(Hospital, hospital_id=hospital_id)
@@ -32,18 +33,18 @@ def hospital_detail(request, hospital_id):
     search = request.GET.get('search', '')
     dept_id = request.GET.get('department', '')
 
-    # 🔍 Search doctors by name or specialization
+    #  Search doctors by name or specialization
     if search:
         doctors = doctors.filter(
             Q(name__icontains=search) |
             Q(specialization__icontains=search)
         )
 
-    # 🎯 Filter by department
+    #  Filter by department
     if dept_id:
         doctors = doctors.filter(department_id=dept_id)
 
-    # 🏥 Departments offered by this hospital (ManyToMany)
+    #  Departments offered by this hospital (ManyToMany)
     departments = Department.objects.filter(hospitals=hospital)
 
     return render(request, 'hospitals/hospital_detail.html', {
@@ -56,15 +57,52 @@ def hospital_detail(request, hospital_id):
 
 
 # -------------------------------
-# 🧪 Department Detail
+#  Department Detail
 # -------------------------------
 def department_detail(request, department_id):
+
     department = get_object_or_404(Department, id=department_id)
 
-    # safer query (works even without related_name)
-    doctors = Doctor.objects.filter(department=department, a_status=True)
+    doctors = Doctor.objects.filter(
+        department=department,
+        a_status=True
+    )
 
-    return render(request, 'hospitals/department_detail.html', {
-        'department': department,
-        'doctors': doctors
+    ranked = []
+
+    for doctor in doctors:
+
+        score, breakdown = calculate_score_with_breakdown(doctor)
+
+        ranked.append({
+            "doctor": doctor,
+            "score": score,
+            "breakdown": breakdown,
+        })
+
+    ranked.sort(
+        key=lambda x: x["score"],
+        reverse=True
+    )
+
+    for i, item in enumerate(ranked, start=1):
+        item["rank"] = i
+
+    return render(
+        request,
+        "hospitals/department_detail.html",
+        {
+            "department": department,
+            "ranked_doctors": ranked,
+        }
+    )
+
+# -------------------------------
+#  Department List
+# -------------------------------
+def department_list(request):
+    departments = Department.objects.all().order_by("name")
+
+    return render(request, "hospitals/department_list.html", {
+        "departments": departments
     })

@@ -20,6 +20,8 @@ INSTALLED_APPS = [
     'HomePage.apps.HomepageConfig',
     'appointment',
     'patients',
+    'payments',
+    'notifications',
     
 
     'admin_dashboard',
@@ -56,6 +58,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'doctors.context_processors.doctor_context',
             ],
         },
     },
@@ -71,9 +74,9 @@ DATABASES = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    # {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
@@ -91,3 +94,25 @@ LOGIN_REDIRECT_URL = '/redirect/'
 # IMPORTANT: separate Django admin
 ADMIN_URL = '/django-admin/'
 LOGOUT_REDIRECT_URL = '/'
+
+MEDIA_URL = "/media/"
+MEDIA_ROOT = BASE_DIR / "media"
+
+STRIPE_SECRET_KEY = "sk_test_51TsgaCPI6q96Goe3EG1JXvR2XBH7z3vRHkuyJkGmws3HMQcQ7soR2ZSrJsVKEbpgASTi9cIi8ivNItQqQe23EfCz00jipRlD9X"
+STRIPE_PUBLIC_KEY = "pk_test_51TsgaCPI6q96Goe3e9GZmCxUAppCFqWweotSN1R56wTHpkjyS5PLA7xSUimYCdrFaCgrFxR19Xz4YnpmRcW65YTT00ItqaPyk7"
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+
+EMAIL_HOST = "smtp.gmail.com"
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
+EMAIL_HOST_USER = "odas.notifications@gmail.com"
+EMAIL_HOST_PASSWORD = "stalrlyziuedxfyk"
+
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+SESSION_COOKIE_AGE = 1209600        # 2 weeks
+SESSION_SAVE_EVERY_REQUEST = True
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False

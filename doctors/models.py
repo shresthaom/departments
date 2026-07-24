@@ -36,31 +36,41 @@ class DoctorAvailability(models.Model):
     def __str__(self):
         return f"{self.doctor.name} availability"
 
-
 class DoctorLeave(models.Model):
+
+    STATUS_CHOICES = [
+        ("pending", "Pending"),
+        ("approved", "Approved"),
+        ("rejected", "Rejected"),
+    ]
+
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
     start_date = models.DateField()
     end_date = models.DateField()
     reason = models.TextField(blank=True, null=True)
+
+    status = models.CharField(
+        max_length=10,
+        choices=STATUS_CHOICES,
+        default="pending",
+    )
+
     is_deleted = models.BooleanField(default=False)
 
     def clean(self):
         from django.core.exceptions import ValidationError
 
-        # skip validation if record is being soft deleted
         if self.is_deleted:
             return
 
         if self.start_date and self.end_date:
             if self.end_date < self.start_date:
-                raise ValidationError("end date cannot be before start date")
+                raise ValidationError("End date cannot be before start date.")
 
     def save(self, *args, **kwargs):
-        # run validation only when not soft deleting
         if not self.is_deleted:
             self.full_clean()
-
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.doctor.name} leave"
+        return f"{self.doctor.name} leave ({self.status})"

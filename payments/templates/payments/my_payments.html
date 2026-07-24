@@ -1,0 +1,228 @@
+{% extends "patients/base.html" %}
+
+{% block title %}
+My Payments
+{% endblock %}
+
+{% block extra_css %}
+
+<style>
+
+.payment-table{
+    width:100%;
+    border-collapse:collapse;
+    background:white;
+    border-radius:10px;
+    overflow:hidden;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.payment-table th{
+    background:#2c3e50;
+    color:white;
+    padding:14px;
+    text-align:left;
+}
+
+.payment-table td{
+    padding:14px;
+    border-bottom:1px solid #eee;
+}
+
+.payment-table tr:hover{
+    background:#f8f9fa;
+}
+
+.status{
+    padding:6px 14px;
+    border-radius:20px;
+    color:white;
+    font-size:14px;
+    font-weight:bold;
+}
+
+.pending{
+    background:#f39c12;
+}
+
+.completed{
+    background:#27ae60;
+}
+
+.failed{
+    background:#e74c3c;
+}
+
+.cancelled{
+    background:#7f8c8d;
+}
+
+.action-btn{
+    display:inline-block;
+    padding:8px 14px;
+    background:#3498db;
+    color:white;
+    text-decoration:none;
+    border-radius:6px;
+    transition:.2s;
+}
+
+.action-btn:hover{
+    background:#2980b9;
+}
+
+.empty{
+    text-align:center;
+    padding:40px;
+    color:#777;
+}
+
+</style>
+
+{% endblock %}
+
+{% block content %}
+
+<h1>My Payments</h1>
+
+<table class="payment-table">
+
+<thead>
+
+<tr>
+
+<th>Appointment</th>
+
+<th>Doctor</th>
+
+<th>Amount</th>
+
+<th>Payment Method</th>
+
+<th>Status</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for transaction in transactions %}
+
+<tr>
+
+<td>
+
+#{{ transaction.appointment.appointment_id }}
+
+</td>
+
+<td>
+
+Dr. {{ transaction.appointment.doctor.name }}
+
+</td>
+
+<td>
+
+Rs. {{ transaction.amount }}
+
+</td>
+
+<td>
+
+{{ transaction.get_payment_method_display }}
+
+</td>
+
+<td>
+
+{% if transaction.payment_status == "completed" %}
+
+<span class="status completed">
+
+Paid
+
+</span>
+
+{% elif transaction.payment_status == "pending" %}
+
+<span class="status pending">
+
+Pending
+
+</span>
+
+{% elif transaction.payment_status == "failed" %}
+
+<span class="status failed">
+
+Failed
+
+</span>
+
+{% else %}
+
+<span class="status cancelled">
+
+{{ transaction.get_payment_status_display }}
+
+</span>
+
+{% endif %}
+
+</td>
+
+<td>
+
+{% if transaction.payment_status == "completed" %}
+
+<a
+href="{% url 'my_receipt' transaction.id %}"
+class="action-btn">
+
+View Receipt
+
+</a>
+
+{% elif transaction.payment_status == "pending" %}
+
+<a
+href="{% url 'my_invoice' transaction.id %}"
+class="action-btn">
+
+View Invoice
+
+</a>
+
+{% else %}
+
+—
+
+{% endif %}
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="6" class="empty">
+
+No payment history found.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% endblock %}

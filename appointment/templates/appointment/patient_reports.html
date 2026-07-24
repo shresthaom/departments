@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Medical Reports</title>
+
+    <style>
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+.navbar{
+    background:#2c3e50;
+    color:white;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.container{
+    width:90%;
+    margin:30px auto;
+}
+
+.report-card{
+    background:white;
+    border-radius:10px;
+    padding:25px;
+    margin-bottom:20px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+.report-card h2{
+    margin-top:0;
+    color:#2c3e50;
+}
+
+.label{
+    font-weight:bold;
+}
+
+.download-btn{
+    display:inline-block;
+    margin-top:15px;
+    padding:10px 18px;
+    background:#3498db;
+    color:white;
+    text-decoration:none;
+    border-radius:8px;
+}
+
+.download-btn:hover{
+    background:#2980b9;
+}
+
+.empty{
+    text-align:center;
+    background:white;
+    padding:40px;
+    border-radius:10px;
+    color:#666;
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="navbar">
+
+<h2>Medical Reports</h2>
+
+<div>
+
+<a href="{% url 'patient_dashboard' %}">
+Dashboard
+</a>
+
+<a href="{% url 'logout' %}">
+Logout
+</a>
+
+</div>
+
+</div>
+
+<div class="container">
+
+<h1>Your Medical Reports</h1>
+
+{% for report in reports %}
+
+<div class="report-card">
+
+<h2>
+Dr. {{ report.appointment.doctor.name }}
+</h2>
+
+<p>
+<span class="label">Appointment:</span>
+{{ report.appointment.appointment_date }}
+at
+{{ report.appointment.appointment_time }}
+</p>
+
+<p>
+<span class="label">Diagnosis:</span><br>
+{{ report.diagnosis }}
+</p>
+
+<p>
+<span class="label">Prescription:</span><br>
+{{ report.prescription }}
+</p>
+
+<p>
+<span class="label">Remarks:</span><br>
+{{ report.remarks|default:"None" }}
+</p>
+{% if report.report_file %}
+
+<a
+    href="{{ report.report_file.url }}"
+    target="_blank"
+    class="download-btn"
+>
+    📄 Download Medical Report
+</a>
+
+{% endif %}
+
+</div>
+
+{% empty %}
+
+<div class="empty">
+
+<h2>No Medical Reports</h2>
+
+<p>
+Your doctor hasn't uploaded any reports yet.
+</p>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</body>
+</html>

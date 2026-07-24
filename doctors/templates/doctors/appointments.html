@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Doctor Appointments</title>
+
+    <style>
+
+        body{
+            font-family:Arial;
+            background:#f4f6f8;
+            padding:30px;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+            background:white;
+        }
+
+        th,
+        td{
+            padding:14px;
+            border-bottom:1px solid #ddd;
+            text-align:left;
+        }
+
+        th{
+            background:#2c3e50;
+            color:white;
+        }
+
+        .status{
+            font-weight:bold;
+        }
+
+        .paid{
+            color:green;
+            font-weight:bold;
+        }
+
+        .pending{
+            color:#d35400;
+            font-weight:bold;
+        }
+
+        .btn{
+            display:inline-block;
+            padding:8px 12px;
+            text-decoration:none;
+            border-radius:5px;
+            color:white;
+            background:#27ae60;
+        }
+
+        .btn:hover{
+            background:#219150;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<h2>My Appointments</h2>
+
+<table>
+
+<tr>
+
+    <th>Patient</th>
+
+    <th>Date</th>
+
+    <th>Time</th>
+
+    <th>Appointment Status</th>
+
+    <th>Payment Method</th>
+
+    <th>Payment Status</th>
+
+    {% if request.GET.status != "upcoming" %}
+        <th>Action</th>
+    {% endif %}
+
+</tr>
+
+{% for appointment in appointments %}
+
+<tr>
+
+    <td>
+
+        {{ appointment.patient.username }}
+
+    </td>
+
+    <td>
+
+        {{ appointment.appointment_date }}
+
+    </td>
+
+    <td>
+
+        {{ appointment.appointment_time }}
+
+    </td>
+
+    <td class="status">
+
+        {{ appointment.status|title }}
+
+    </td>
+
+    <td>
+
+        {% if appointment.transaction %}
+
+            {{ appointment.transaction.get_payment_method_display }}
+
+        {% else %}
+
+            -
+
+        {% endif %}
+
+    </td>
+
+    <td>
+
+        {% if appointment.transaction %}
+
+            {% if appointment.transaction.payment_status == "completed" %}
+
+                <span class="paid">
+
+                    Completed
+
+                </span>
+
+            {% else %}
+
+                <span class="pending">
+
+                    {{ appointment.transaction.get_payment_status_display }}
+
+                </span>
+
+            {% endif %}
+
+        {% else %}
+
+            -
+
+        {% endif %}
+
+    </td>
+
+    {% if request.GET.status != "upcoming" %}
+
+    <td>
+
+        
+
+        {% if appointment.status == "completed" %}
+
+            {% if appointment.medicalreport %}
+
+                <a href="{% url 'view_report' appointment.appointment_id %}">
+                    View Report
+                </a>
+
+            {% else %}
+
+                <a href="{% url 'upload_report' appointment.appointment_id %}">
+                    Upload Report
+                </a>
+
+            {% endif %}
+
+        {% elif appointment.status == "missed" %}
+
+                    Missed
+
+        {% elif appointment.status == "cancelled" %}
+
+            Cancelled
+
+        {% endif %}
+
+    </td>
+
+    {% endif %}
+
+</tr>
+
+{% empty %}
+
+<tr>
+
+<td colspan="7">
+
+No appointments found.
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</body>
+
+</html>

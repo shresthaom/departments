@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>Upload Medical Report</title>
+
+<style>
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#f4f6f9;
+    margin:0;
+}
+
+.container{
+    width:90%;
+    max-width:900px;
+    margin:40px auto;
+}
+
+.card{
+    background:white;
+    padding:30px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,.1);
+}
+
+h1{
+    color:#2c3e50;
+    margin-bottom:25px;
+}
+
+.info{
+    background:#f8f9fa;
+    padding:18px;
+    border-radius:8px;
+    margin-bottom:25px;
+}
+
+.info p{
+    margin:8px 0;
+}
+
+label{
+    display:block;
+    font-weight:bold;
+    margin-top:18px;
+    margin-bottom:8px;
+}
+
+textarea,
+input[type=file]{
+    width:100%;
+    padding:12px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+textarea{
+    resize:vertical;
+}
+
+.btn{
+    margin-top:25px;
+    background:#3498db;
+    color:white;
+    border:none;
+    padding:12px 25px;
+    border-radius:8px;
+    cursor:pointer;
+    font-size:15px;
+}
+
+.btn:hover{
+    background:#2980b9;
+}
+
+.back{
+    text-decoration:none;
+    color:#3498db;
+    font-weight:bold;
+    display:inline-block;
+    margin-bottom:20px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<a href="{% url 'doctor_appointments' %}" class="back">
+← Back to Appointments
+</a>
+
+<div class="card">
+
+{% if report_exists %}
+    <h2>Edit Medical Report</h2>
+{% else %}
+    <h2>Upload Medical Report</h2>
+{% endif %}
+
+<div class="info">
+
+<p><strong>Patient:</strong> {{ appointment.patient.username }}</p>
+
+<p><strong>Doctor:</strong> {{ appointment.doctor.name }}</p>
+
+<p><strong>Date:</strong> {{ appointment.appointment_date }}</p>
+
+<p><strong>Time:</strong> {{ appointment.appointment_time }}</p>
+
+</div>
+
+<form method="POST" enctype="multipart/form-data">
+
+{% csrf_token %}
+
+{{ form.as_p }}
+
+<button type="submit" class="btn">
+Save Medical Report
+</button>
+
+</form>
+
+</div>
+
+</div>
+
+</body>
+</html>

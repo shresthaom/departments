@@ -1,16 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Doctors</title>
-
+    <title>Doctor Directory</title>
     <style>
         .doctor-card {
             border: 1px solid #ddd;
-            padding: 16px;
+            padding: 22px;
             margin-bottom: 16px;
             border-radius: 10px;
             background: #fff;
         }
+        .doctor-card{
+    transition:.25s ease;
+}
+
+.doctor-card:hover{
+    transform:translateY(-6px);
+    box-shadow:0 10px 20px rgba(0,0,0,.15);
+}
+h1{
+    color:#2c3e50;
+    margin-bottom:8px;
+}
+
+.subtitle{
+    color:#666;
+    margin-bottom:25px;
+}
 
         .rank-1 {
             border-left: 6px solid gold;
@@ -49,15 +65,182 @@
         ul {
             margin-top: 8px;
         }
+
+        .doctor-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(350px,1fr));
+    gap:20px;
+}
+.navbar{
+    background:#2c3e50;
+    color:white;
+    padding:18px 40px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.navbar a{
+    color:white;
+    text-decoration:none;
+    margin-left:20px;
+}
+
+.container{
+    width:90%;
+    margin:30px auto;
+}
+.search-box{
+    display:flex;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:30px;
+}
+
+.search-box input,
+.search-box select{
+    padding:10px;
+    border:1px solid #ccc;
+    border-radius:8px;
+    font-size:15px;
+}
+
+.search-box button{
+    background:#3498db;
+    color:white;
+    border:none;
+    padding:10px 20px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.search-box button:hover{
+    background:#2980b9;
+}
+.btn{
+    display:inline-block;
+    margin-top:15px;
+    background:#3498db;
+    color:white;
+    padding:10px 18px;
+    border-radius:8px;
+    text-decoration:none;
+}
+.btn:hover{
+    background:#2980b9;
+}
+.button-group{
+    display:flex;
+    gap:10px;
+    margin-top:15px;
+}
+
+.secondary{
+    background:#7f8c8d;
+}
+
+.secondary:hover{
+    background:#6c7a89;
+}
+
     </style>
 
 </head>
 
 <body>
+    <div class="navbar">
 
-<h2>Ranked Doctors</h2>
+    <h2>Doctor Directory</h2>
 
-{% for item in ranked_doctors %}
+    <div>
+        <a href="{% url 'patient_dashboard' %}">Dashboard</a>
+        <a href="{% url 'hospital_list' %}">Hospitals</a>
+        <a href="{% url 'logout' %}">Logout</a>
+    </div>
+
+</div>
+<div class="container">
+
+    {% if mode == "book" %}
+       <h1>Book an Appointment</h1>
+<p class="subtitle">
+    Choose a doctor from the ranked recommendations below.
+</p>
+    {% elif mode == "find" %}
+
+<h1>Find Doctors</h1>
+
+<p class="subtitle">
+Browse doctors and view their profiles.
+</p>
+
+{% else %}
+
+<h1>Recommended Doctors</h1>
+
+<p class="subtitle">
+Doctors ranked using our recommendation algorithm.
+</p>
+
+{% endif %}
+
+   <form method="GET">
+
+<div class="search-box">
+
+    <input
+        type="text"
+        name="search"
+        placeholder="Search doctor"
+        value="{{ request.GET.search }}"
+    >
+
+    <select name="specialization">
+
+    <option value="">All Specializations</option>
+
+    {% for spec in specializations %}
+
+        <option
+            value="{{ spec }}"
+            {% if request.GET.specialization == spec %}selected{% endif %}
+        >
+            {{ spec }}
+        </option>
+
+    {% endfor %}
+
+</select>
+
+   <select name="hospital">
+
+    <option value="">All Hospitals</option>
+
+    {% for hospital in hospitals %}
+
+    <option
+        value="{{ hospital.hospital_id }}"
+        {% if request.GET.hospital == hospital.hospital_id|stringformat:"s" %}
+            selected
+        {% endif %}
+    >
+        {{ hospital.name }}
+    </option>
+
+    {% endfor %}
+
+</select>
+
+    <button type="submit">
+        Search
+    </button>
+
+</div>
+
+</form>
+
+    <div class="doctor-grid">
+     {% for item in ranked_doctors %}
 
     <div class="doctor-card
         {% if item.rank == 1 %}rank-1{% elif item.rank == 2 %}rank-2{% elif item.rank == 3 %}rank-3{% endif %}
@@ -80,38 +263,83 @@
         <p><b>Specialization:</b> {{ item.doctor.specialization }}</p>
         <p><b>Qualification:</b> {{ item.doctor.qualification }}</p>
         <p><b>Experience:</b> {{ item.doctor.experience_years }} years</p>
+        
+       <!-- SCORE -->
+        <p style="
+            display:inline-block;
+            background:#27ae60;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-weight:bold;
+            margin:10px 0 6px 0;
+        ">
+             Recommendation Score: {{ item.score }}/100
+        </p>
+
+        <br>
 
         {% if item.doctor.a_status %}
-            <p style="color:green;"><b>Available</b></p>
+        <span style="
+            display:inline-block;
+            background:#27ae60;
+            color:white;
+            padding:5px 12px;
+            border-radius:20px;
+            font-size:13px;
+        ">
+            Available
+        </span>
         {% else %}
-            <p style="color:red;"><b>Not Available</b></p>
+        <span style="
+            display:inline-block;
+            background:#e74c3c;
+            color:white;
+            padding:5px 12px;
+            border-radius:20px;
+            font-size:13px;
+        ">
+            Unavailable
+        </span>
         {% endif %}
 
-        <!-- SCORE -->
-        <div class="score-box">
-            ⭐ Score: {{ item.score }}
-        </div>
-
-        <!-- BREAKDOWN -->
-        <div>
-            <b>Ranking Breakdown:</b>
-            <ul>
-                {% for b in item.breakdown %}
-                    <li>
-                        {% if b|length == 3 %}
-                            {{ b.0 }} ({{ b.2 }}): +{{ b.1 }}
-                        {% else %}
-                            {{ b.0 }}: +{{ b.1 }}
-                        {% endif %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-
+       
         <!-- ACTION -->
-        <a href="{% url 'doctor_detail' item.doctor.doctor_id %}">
-            View Profile
+            <!-- ACTION -->
+<div class="button-group">
+
+{% if mode == "book" %}
+
+    {% if item.doctor.a_status %}
+
+        <a
+            href="{% url 'book_appointment' item.doctor.doctor_id %}"
+            class="btn"
+            id="book-doctor-{{ item.doctor.doctor_id }}">
+            Book Appointment
         </a>
+
+    {% else %}
+
+        <button class="btn secondary" disabled>
+            Unavailable
+        </button>
+
+    {% endif %}
+
+    <a href="{% url 'doctor_detail' item.doctor.doctor_id %}" class="btn secondary">
+        View Profile
+    </a>
+
+{% else %}
+
+    <a href="{% url 'doctor_detail' item.doctor.doctor_id %}" class="btn">
+        View Profile
+    </a>
+
+{% endif %}
+
+</div>
 
     </div>
 
@@ -120,6 +348,8 @@
     <p>No doctors found.</p>
 
 {% endfor %}
+</div>
+</div>
 
 </body>
 </html>

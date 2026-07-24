@@ -1,38 +1,293 @@
-{% extends 'admin/base.html' %}
+{% extends "admin_dashboard/base.html" %}
 
 {% block title %}
 Appointments
 {% endblock %}
 
-{% block page_title %}
-Appointments
+{% block extra_css %}
+
+<style>
+
+.page-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+}
+
+.page-header h2{
+    margin:0;
+    color:#1f2937;
+}
+
+.date-banner{
+    background:#e8f1ff;
+    color:#2563eb;
+    padding:14px 18px;
+    border-left:5px solid #2563eb;
+    border-radius:10px;
+    margin-bottom:20px;
+    font-weight:600;
+}
+
+.table-card{
+    background:#fff;
+    border-radius:14px;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,0,.08);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+thead{
+    background:#2563eb;
+    color:white;
+}
+
+th{
+    padding:15px;
+    text-align:left;
+    font-weight:600;
+}
+
+td{
+    padding:15px;
+    border-bottom:1px solid #ececec;
+}
+
+tbody tr:hover{
+    background:#f8fbff;
+}
+
+.badge{
+    padding:6px 12px;
+    border-radius:20px;
+    color:white;
+    font-size:13px;
+    font-weight:600;
+    display:inline-block;
+}
+
+.badge-completed{
+    background:#10b981;
+}
+
+.badge-upcoming{
+    background:#f59e0b;
+}
+
+.badge-cancelled{
+    background:#ef4444;
+}
+
+.badge-missed{
+    background:#6b7280;
+}
+
+.badge-approved{
+    background:#10b981;
+}
+
+.badge-review{
+    background:#f59e0b;
+}
+
+.badge-rejected{
+    background:#ef4444;
+}
+
+.btn{
+    display:inline-block;
+    padding:6px 12px;
+    border-radius:6px;
+    text-decoration:none;
+    color:white;
+    font-size:13px;
+    font-weight:600;
+    margin-right:5px;
+}
+
+.btn-success{
+    background:#10b981;
+}
+
+.btn-success:hover{
+    background:#059669;
+}
+
+.btn-danger{
+    background:#ef4444;
+}
+
+.btn-danger:hover{
+    background:#dc2626;
+}
+
+.btn-sm{
+    font-size:12px;
+    padding:5px 10px;
+}
+
+.empty-row{
+    text-align:center;
+    padding:40px;
+    color:#6b7280;
+}
+
+@media(max-width:768px){
+
+.table-card{
+    overflow-x:auto;
+}
+
+table{
+    min-width:700px;
+}
+
+}
+
+</style>
+
 {% endblock %}
 
 {% block content %}
 
+<div class="page-header">
+    <h2>Appointments</h2>
+</div>
+
+{% if selected_date %}
+<div class="date-banner">
+    📅 Showing appointments for <strong>{{ selected_date }}</strong>
+</div>
+{% endif %}
+
+<div class="table-card">
+
 <table>
 
-    <tr>
-        <th>Patient</th>
-        <th>Doctor</th>
-        <th>Date</th>
-        <th>Status</th>
-    </tr>
+    <thead>
+        <tr>
+            <th>Patient</th>
+            <th>Doctor</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Status</th>
+            <th>Approval</th>
+            <th>Review Reason</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
 
     {% for appointment in appointments %}
-    <tr>
 
-        <td>{{ appointment.patient }}</td>
+        <tr>
 
-        <td>{{ appointment.doctor }}</td>
+            <td>{{ appointment.patient.username }}</td>
 
-        <td>{{ appointment.appointment_date }}</td>
+            <td>{{ appointment.doctor.name }}</td>
 
-        <td>{{ appointment.status }}</td>
+            <td>{{ appointment.appointment_date }}</td>
 
-    </tr>
+            <td>{{ appointment.appointment_time }}</td>
+
+            <td>
+
+                {% if appointment.status == "completed" %}
+                    <span class="badge badge-completed">Completed</span>
+
+                {% elif appointment.status == "upcoming" %}
+                    <span class="badge badge-upcoming">Upcoming</span>
+
+                {% elif appointment.status == "cancelled" %}
+                    <span class="badge badge-cancelled">Cancelled</span>
+
+                {% elif appointment.status == "missed" %}
+                    <span class="badge badge-missed">Missed</span>
+
+                {% else %}
+                    {{ appointment.status }}
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if appointment.approval_status == "approved" %}
+
+                    <span class="badge badge-approved">
+                        Approved
+                    </span>
+
+                {% elif appointment.approval_status == "review" %}
+
+                    <span class="badge badge-review">
+                        Needs Review
+                    </span>
+
+                {% elif appointment.approval_status == "rejected" %}
+
+                    <span class="badge badge-rejected">
+                        Rejected
+                    </span>
+
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if appointment.review_reason %}
+                    {{ appointment.review_reason }}
+                {% else %}
+                    —
+                {% endif %}
+
+            </td>
+
+            <td>
+
+                {% if appointment.approval_status == "review" %}
+
+                   <a href="{% url 'admin_approve_appointment' appointment.appointment_id %}"
+                    class="btn btn-success btn-sm">
+                        Approve
+                    </a>
+                    <a href="{% url 'admin_reject_appointment' appointment.appointment_id %}"
+                    class="btn btn-danger btn-sm">
+                        Reject
+                    </a>
+
+                {% else %}
+                    —
+                {% endif %}
+
+            </td>
+
+        </tr>
+
+    {% empty %}
+
+        <tr>
+
+            <td colspan="8" class="empty-row">
+                No appointments found.
+            </td>
+
+        </tr>
+
     {% endfor %}
 
+    </tbody>
+
 </table>
+
+</div>
 
 {% endblock %}

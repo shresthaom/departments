@@ -1,0 +1,97 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Delete Hospital{% endblock %}
+
+{% block content %}
+
+<div style="max-width:650px;margin:50px auto;">
+
+    <div style="
+        background:white;
+        padding:35px;
+        border-radius:15px;
+        box-shadow:0 10px 25px rgba(0,0,0,.08);
+        text-align:center;
+    ">
+
+        <h2 style="color:#dc2626;">
+            Delete Hospital
+        </h2>
+
+        <p>
+
+            Are you sure you want to delete
+
+        </p>
+
+        <h3>
+
+            {{ hospital.name }}
+
+        </h3>
+
+        {% if doctor_exists %}
+
+            <div style="
+                background:#fee2e2;
+                color:#991b1b;
+                padding:18px;
+                border-radius:10px;
+                margin:25px 0;
+            ">
+
+                This hospital cannot be deleted because
+                doctors are currently assigned to it.
+
+            </div>
+
+            <a
+                href="{% url 'admin_hospitals' %}"
+                class="btn btn-secondary">
+
+                Back
+
+            </a>
+
+        {% else %}
+
+            <div style="
+                background:#fef3c7;
+                color:#92400e;
+                padding:18px;
+                border-radius:10px;
+                margin:25px 0;
+            ">
+
+                This action permanently deletes the hospital.
+
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                <button
+                    class="btn btn-danger">
+
+                    Delete Hospital
+
+                </button>
+
+                <a
+                    href="{% url 'admin_hospitals' %}"
+                    class="btn btn-secondary">
+
+                    Cancel
+
+                </a>
+
+            </form>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
